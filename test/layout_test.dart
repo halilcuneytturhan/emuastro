@@ -46,10 +46,10 @@ void main() {
     app.onboarded = true;
     await t.pumpWidget(const EmuAstroApp());
     await t.pump(const Duration(milliseconds: 500));
-    expect(find.text('Kişisel Haritan'), findsWidgets);
+    expect(find.text('Doğum Dosyan'), findsWidgets);
     await t.tap(find.bySemanticsLabel('İlişkiler'));
     await t.pump(const Duration(milliseconds: 500));
-    expect(find.text('Rehberini bağla', skipOffstage: false), findsWidgets);
+    expect(find.text('Rehberi aç', skipOffstage: false), findsWidgets);
     await t.tap(find.bySemanticsLabel('Sor'));
     await t.pump(const Duration(milliseconds: 500));
     expect(find.text('Haritana bir soru sor…', skipOffstage: false), findsWidgets);

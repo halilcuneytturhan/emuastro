@@ -40,10 +40,10 @@ Future<String?> exportPdf() async {
       h('Bugün (${dateLine(app.today)})'),
       p('Fırsat ve akış %${d.scores[0]} · Zihin ve odak %${d.scores[1]} · Enerji %${d.scores[2]}'),
       p('Bugün yap: ${d.todo}'),
-      p('Bugün asla yapma: ${d.never}'),
+      p('Bugün uzak dur: ${d.never}'),
       p('Dikkat et: ${d.watch}'),
       p('Bu dönem: ${d.period}'),
-      h('Gökyüzünde neler oluyor'),
+      h('Gökyüzü takvimi'),
       for (final e in app.events) p('${e.kicker} – ${e.title}: ${e.body}'),
       h('Kişisel harita raporu'),
       for (var i = 0; i < reportSections.length; i++)

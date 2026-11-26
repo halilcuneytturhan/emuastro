@@ -158,7 +158,7 @@ List<Hit> transitHits(Chart natal, DateTime when, {List<String>? only}) {
 }
 
 const scoreCats = [
-  ('Fırsat ve akış', ['jupiter', 'venus', 'sun'], ['sun', 'jupiter', 'venus', 'asc']),
+  ('Şans ve akış', ['jupiter', 'venus', 'sun'], ['sun', 'jupiter', 'venus', 'asc']),
   ('Zihin ve odak', ['mercury', 'moon', 'saturn'], ['mercury', 'moon', 'saturn']),
   ('Enerji ve beden', ['mars', 'sun', 'moon'], ['mars', 'sun', 'asc']),
 ];
@@ -293,7 +293,7 @@ class SkyEvent {
   final DateTime date;
   const SkyEvent(this.key, this.date, this.kicker, this.title, this.kind,
       this.body);
-  String get sub => 'Sana olan etkilerini incele';
+  String get sub => 'Senin için ne anlama geliyor?';
 }
 
 const _months = [

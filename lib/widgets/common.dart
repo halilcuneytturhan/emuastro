@@ -75,7 +75,7 @@ class _BadgeRing extends CustomPainter {
     final c = s.center(Offset.zero);
     final R = s.width / 2;
     // dış çember boyunca "ROZET KAZAN · ROZET KAZAN ·"
-    const text = 'ROZET KAZAN · ROZET KAZAN · ';
+    const text = 'EMU ROZETİ · EMU ROZETİ · ';
     final chars = text.split('');
     final style = TextStyle(
         fontFamily: 'Figtree',

@@ -126,10 +126,10 @@ class AppData extends ChangeNotifier {
   int get performance => day.scores[0];
   List<String> get boxTips => day.tips;
   List<(String, String)> get moves => [
-        ('BUGÜN YAP', day.todo),
-        ('DİKKAT ET', day.watch),
-        ('HATIRLATMA', day.reminder),
-        ('BU DÖNEM', day.period),
+        ('YAP', day.todo),
+        ('ÖZEN GÖSTER', day.watch),
+        ('UNUTMA', day.reminder),
+        ('DÖNEMİN TEMASI', day.period),
       ];
   List<Planet> get planets => [
         for (final p in chart.planets) Planet(p.id, p.lon, retro: p.retro)

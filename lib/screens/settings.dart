@@ -74,7 +74,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
               row('Aydınlatma Metni ve Gizlilik', 'KVKK kapsamındaki bilgilendirme', () => openLegal(context)),
-              row('Hakkında', 'EmuAstro 1.0', () => showInfo(context, 'EmuAstro',
+              row('Hakkında', 'EmuAstro 1.0 · logo ve marka EmuAstro’ya aittir', () => showInfo(context, 'EmuAstro',
                   'Gezegen konumları cihazda hesaplanır (Schlyter yöntemi, ~1–2 yay dakikası doğruluk). Ev sistemi: eşit ev. Yorumlar eğlence ve öz farkındalık amaçlıdır.')),
               const SizedBox(height: 12),
               row('Tüm verileri sil', 'Profil, arkadaşlar, sohbet ve rozetler silinir', () async {

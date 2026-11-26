@@ -5,10 +5,10 @@ import '../data/sample.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/dots.dart';
-import '../widgets/sprites.dart';
 import '../widgets/surface.dart';
 import 'friends.dart' show fmtDate;
 import 'legal.dart';
+import '../widgets/place_picker.dart';
 
 /// İlk açılış: isim, doğum tarihi, saat, yer ve gizlilik onayı.
 class OnboardingScreen extends StatefulWidget {
@@ -141,7 +141,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       case 0:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const SizedBox(height: 20),
-          const Center(child: Sprite('star', size: 90, cells: 30)),
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(32),
+              child: Image.asset('assets/brand/logo.png', width: 150, height: 150),
+            ),
+          ),
           const SizedBox(height: 30),
           _title('EMUASTRO', 'Gökyüzü sana ne söylüyor?',
               'Doğum haritanı hesaplayıp her gün sana özel skorlar, uyarılar ve öneriler hazırlıyoruz.'),
@@ -153,7 +158,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               DotText('%72', pitch: 4.4),
               const SizedBox(width: 18),
               const Expanded(
-                child: Text('Günlük yaşam haritan, transitlerin doğum haritana etkisinden hesaplanır.',
+                child: Text('Günün ritmi, gökyüzündeki hareketlerin doğum haritana etkisinden hesaplanır.',
                     style: TextStyle(
                         fontFamily: 'Figtree', color: Colors.white, fontSize: 13)),
               ),
@@ -208,27 +213,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       case 3:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           _title('3 / 4', 'Nerede doğdun?', 'Yükselen burcun ve evlerin doğum yerine göre hesaplanır.'),
-          for (final p in places.take(12))
-            RadioListTile<String>(
-              contentPadding: EdgeInsets.zero,
-              value: p.name,
-              groupValue: place,
-              onChanged: (v) => setState(() => place = v!),
-              title: Text(p.name, style: T.heading.copyWith(fontSize: 14)),
-            ),
-          TextButton(
-            onPressed: () async {
-              final r = await showModalBottomSheet<String>(
-                  context: context,
-                  builder: (c) => ListView(children: [
-                        for (final p in places)
-                          ListTile(title: Text(p.name), onTap: () => Navigator.pop(c, p.name)),
-                      ]));
-              if (r != null) setState(() => place = r);
-            },
-            child: Text('Diğer şehirler… (seçili: $place)',
-                style: TextStyle(fontFamily: 'Figtree', color: C.accent)),
-          ),
+          _field('Doğum yeri', place.split(', ').first, () async {
+            final r = await pickPlace(context, current: place);
+            if (r != null) setState(() => place = r);
+          }),
+          const SizedBox(height: 12),
+          Text(place, style: T.body.copyWith(fontSize: 12.5)),
+          const SizedBox(height: 16),
+          Text('Listede ${places.length} şehir var: Türkiye’nin 81 ili ve yurt dışında Türklerin yoğun yaşadığı şehirler. Köyün ya da ilçen yoksa en yakın il merkezini seç.',
+              style: T.body.copyWith(fontSize: 12.5)),
         ]);
       default:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

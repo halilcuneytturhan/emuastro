@@ -160,7 +160,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
   List<Widget> _friends(BuildContext context) => [
         ..._header('ARKADAŞLAR · İLİŞKİLER'),
         const SizedBox(height: 19),
-        _p(Text('Rehberinde EmuAstro\'da olanlar', style: T.heading)),
+        _p(Text('Rehberindekiler', style: T.heading)),
         const SizedBox(height: 10),
         _p(Container(
           padding: const EdgeInsets.fromLTRB(17, 22, 17, 18),
@@ -172,7 +172,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
               const Sprite('book', size: 34, cells: 22),
               const SizedBox(width: 16),
               Expanded(
-                child: Text('Rehberindeki arkadaşlarını bul',
+                child: Text('Rehberinden arkadaş ekle',
                     style: T.heading.copyWith(fontSize: 14.2)),
               ),
             ]),
@@ -190,7 +190,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
                     color: const Color(0xFF7146F4),
                     borderRadius: BorderRadius.circular(21)),
                 child: const Center(
-                  child: Text('Rehberini bağla',
+                  child: Text('Rehberi aç',
                       style: TextStyle(
                           fontFamily: 'Figtree',
                           fontWeight: FontWeight.w800,
@@ -230,7 +230,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
           ),
         )),
         const SizedBox(height: 25),
-        _p(Text('Eklediklerin', style: T.heading)),
+        _p(Text('Çevren', style: T.heading)),
         const SizedBox(height: 10),
         _p(SizedBox(
           height: 82,
@@ -293,7 +293,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
         const Center(child: _Doodles(width: 262)),
         const SizedBox(height: 30),
         Center(
-            child: Text('EmuAstro\'yu arkadaşına hediye et',
+            child: Text('Bir arkadaşına Premium hediye et',
                 style: T.heading.copyWith(fontSize: 16.2, fontWeight: FontWeight.w800))),
         const SizedBox(height: 7),
         _p(Text(
@@ -310,7 +310,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
               decoration: BoxDecoration(
                   color: C.button, borderRadius: BorderRadius.circular(25)),
               child: const Center(
-                  child: Text('Hediye gönder',
+                  child: Text('Hediyeyi paylaş',
                       style: TextStyle(
                           fontFamily: 'Figtree',
                           fontWeight: FontWeight.w800,
@@ -328,7 +328,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
         Center(
           child: GestureDetector(
             onTap: _redeem,
-            child: Text('Sana hediye mi geldi? Kodu gir',
+            child: Text('Hediye kodun mu var? Gir',
                 style: T.body.copyWith(
                     fontSize: 10.4,
                     fontWeight: FontWeight.w700,

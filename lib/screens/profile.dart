@@ -166,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 46),
           _p(Row(children: [
-            Text('Rozetlerim', style: T.monoTitle),
+            Text('Koleksiyonum', style: T.monoTitle),
             const SizedBox(width: 15),
             GestureDetector(
               onTap: () => showInfo(context, 'Rozetler',
@@ -225,9 +225,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 33),
           _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 39),
-          _p(Text('HARİTA İKİZLERİN', style: T.sectionLabel)),
+          _p(Text('YILDIZ KARDEŞLERİN', style: T.sectionLabel)),
           const SizedBox(height: 10),
-          _p(Text('Haritan kimlere benziyor?', style: T.monoTitle)),
+          _p(Text('Gökyüzünü kimlerle paylaşıyorsun?', style: T.monoTitle)),
           const SizedBox(height: 28),
           SizedBox(
             height: 194,
@@ -247,7 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 24),
           _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 37),
-          _p(Text('Bu ara senin için', style: T.monoTitle)),
+          _p(Text('Günün sürprizi', style: T.monoTitle)),
           const SizedBox(height: 62),
           const _GiftBox(),
           const SizedBox(height: 30),
@@ -532,10 +532,10 @@ class _GiftBoxState extends State<_GiftBox> with SingleTickerProviderStateMixin 
           ),
         ),
         const SizedBox(height: 14),
-        Text(open ? 'Bugünün önerisi' : 'Bugünün önerileri kutuda',
+        Text(open ? 'Bugünün önerisi' : 'Bugünün mesajı kutuda',
             style: T.monoCard.copyWith(color: C.ink, fontSize: 14.4)),
         const SizedBox(height: 7),
-        Text(open ? 'Kapatmak için dokun' : 'Kutuyu açmak için dokun',
+        Text(open ? 'Kapatmak için dokun' : 'Açmak için dokun',
             style: T.body.copyWith(fontSize: 12.4)),
       ]),
     );
@@ -651,7 +651,7 @@ class _BirthCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(22, 18, 22, 22),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Text('Doğum bilgilerim', style: T.monoCard.copyWith(fontSize: 14.6)),
+          Text('Doğum kaydım', style: T.monoCard.copyWith(fontSize: 14.6)),
           const Spacer(),
           GestureDetector(
             onTap: onEdit,

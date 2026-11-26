@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
 import '../astro/interpret.dart';
-import '../astro/places.dart';
 import '../data/sample.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/dots.dart';
 import '../widgets/surface.dart';
 import 'premium.dart';
+import '../widgets/place_picker.dart';
 import 'tools.dart' show synastrySections;
 import '../services/backend.dart';
 
@@ -77,14 +77,7 @@ Future<(String, DateTime, String, String, bool)?> birthForm(BuildContext context
                   }
                 }),
                 _pickRow('Doğum yeri', pl, () async {
-                  final r = await showModalBottomSheet<String>(
-                      context: ctx,
-                      builder: (c2) => ListView(children: [
-                            for (final p in places)
-                              ListTile(
-                                  title: Text(p.name),
-                                  onTap: () => Navigator.pop(c2, p.name)),
-                          ]));
+                  final r = await pickPlace(ctx, current: pl);
                   if (r != null) setS(() => pl = r);
                 }),
                 if (showPartner)

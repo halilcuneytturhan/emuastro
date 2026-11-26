@@ -49,7 +49,7 @@ class _DetailScreenState extends State<DetailScreen> {
               const SizedBox(height: 22),
               Text('KİŞİSEL HARİTAN', style: T.sectionLabel),
               const SizedBox(height: 8),
-              Text('Detaylı analiz', style: T.monoTitleBold),
+              Text('Tüm rapor', style: T.monoTitleBold),
               const SizedBox(height: 6),
               Text(
                   'Güneş ${app.sun} · Ay ${app.moon} · Yükselen ${app.asc}',

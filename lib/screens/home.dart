@@ -112,9 +112,9 @@ class HomeScreen extends StatelessWidget {
         _pad(const MoonCard()),
         const SizedBox(height: 56),
         _pad(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Gökyüzünde neler oluyor', style: T.monoTitle),
+          Text('Gökyüzü takvimi', style: T.monoTitle),
           const SizedBox(height: 6),
-          Text('Bu dönemin olayları ve senin haritana etkileri',
+          Text('Yaklaşan olaylar ve sana dokunuşları',
               style: T.body.copyWith(fontSize: 12.6)),
           const SizedBox(height: 11),
           for (final e in events) ...[
@@ -123,13 +123,13 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 12),
           ],
           const SizedBox(height: 10),
-          Text('Görünürlük ve Hareket', style: T.monoTitleBold),
+          Text('Bugünün pusulası', style: T.monoTitleBold),
           const SizedBox(height: 24),
         ])),
         const _MoveFolders(),
         const SizedBox(height: 25),
         _pad(_DarkButton(
-            label: 'Detaylı analiz',
+            label: 'Tüm rapor',
             mono: true,
             height: 68,
             color: const Color(0xFF1C1B21),
@@ -180,7 +180,7 @@ void openEvent(BuildContext context, SkyEvent e, Pal pal) =>
     Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => EventDetail(event: e, pal: pal)));
 
-/// Kişisel Haritan dosya yığını.
+/// Doğum Dosyan yığını.
 class _ChartFolders extends StatelessWidget {
   const _ChartFolders();
   @override
@@ -232,7 +232,7 @@ class _ChartFolders extends StatelessWidget {
               tabS: (w - 37.5) * .5 - 15,
               tabE: (w - 37.5) * .78,
               pal: Pal.pink,
-              label: 'YILDIZ'),
+              label: 'GÜNEŞ'),
           back(
               top: 25,
               l: 8,
@@ -240,7 +240,7 @@ class _ChartFolders extends StatelessWidget {
               tabS: (w - 16.5) * .4 - 18,
               tabE: (w - 16.5) * .68,
               pal: Pal.blue,
-              label: 'AY'),
+              label: 'YÜKSELEN'),
           Positioned(
             top: 50,
             left: 0,
@@ -278,7 +278,7 @@ class _ChartFolderFront extends StatelessWidget {
       const Positioned(
           left: 16,
           top: 8,
-          child: Text('Kişisel Haritan',
+          child: Text('Doğum Dosyan',
               style: TextStyle(
                   fontFamily: 'PlexMono',
                   fontWeight: FontWeight.w500,
@@ -373,7 +373,7 @@ class _NeverCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ShareCard(
-      text: 'Bugün asla yapma: ${app.neverToday}',
+      text: 'Bugün uzak dur: ${app.neverToday}',
       child: Pearl(
       pal: Pal.red,
       radius: 23,
@@ -384,7 +384,7 @@ class _NeverCard extends StatelessWidget {
       shadowY: 10,
       padding: const EdgeInsets.fromLTRB(21.5, 20, 21.5, 14),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Bugün asla yapma', style: T.monoCard),
+        Text('Bugün uzak dur', style: T.monoCard),
         const SizedBox(height: 11),
         Text(app.neverToday, style: T.cardBody),
         const SizedBox(height: 18),
@@ -420,10 +420,10 @@ class _PerformanceState extends State<_Performance> {
     const ch = 359.0;
     final order = [(front + 1) % 3, (front + 2) % 3, front];
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _pad(Text('BUGÜNÜN PERFORMANS KODU', style: T.sectionLabel)),
+      _pad(Text('BUGÜNÜN ENERJİSİ', style: T.sectionLabel)),
       const SizedBox(height: 13),
       _pad(Row(children: [
-        Expanded(child: Text('Günlük yaşam haritası', style: T.monoTitle)),
+        Expanded(child: Text('Günün ritmi', style: T.monoTitle)),
         Container(
           width: 51,
           height: 29,
