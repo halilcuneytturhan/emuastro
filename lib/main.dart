@@ -10,6 +10,7 @@ import 'services/backend.dart';
 import 'screens/profile.dart';
 import 'screens/relations.dart';
 import 'theme.dart';
+import 'widgets/common.dart' show showInfo;
 import 'widgets/nav.dart';
 import 'widgets/surface.dart';
 
@@ -71,6 +72,13 @@ class _ShellState extends State<Shell> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final m = app.rewardMessage;
+      if (m != null && mounted) {
+        app.rewardMessage = null;
+        showInfo(context, 'Seri ödülü', m);
+      }
+    });
     // Karşılaştırma için: ?tab=0..3&scroll=300
     if (kIsWeb) {
       final q = Uri.base.queryParameters;

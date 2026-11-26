@@ -6,6 +6,7 @@ const shots = [
   ['01', 'tab=0&scroll=0'],
   ['02', 'tab=0&scroll=SCROLL2&compact=1'],
   ['03', 'tab=0&scroll=SCROLL3'],
+  ['10', 'tab=0&scroll=1200'],
   ['04', 'tab=1&scroll=0'],
   ['05', 'tab=1&scroll=306'],
   ['06', 'tab=3&scroll=0'],

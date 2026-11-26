@@ -77,6 +77,7 @@ class AppData extends ChangeNotifier {
   int questionsToday = 0;
   String? boxOpenedDay;
   bool transit = false;
+  String? rewardMessage;
 
   // hesaplanan
   late Chart chart;
@@ -169,8 +170,17 @@ class AppData extends ChangeNotifier {
       streak = last == y ? streak + 1 : 1;
       await p.setString('lastOpen', tk);
       await p.setInt('streak', streak);
+      // Seri ödülü: her 7 günde bir 1 günlük Premium + rozet
+      if (streak % 7 == 0) {
+        final until = DateTime.now().add(const Duration(days: 1));
+        if (trialUntil == null || trialUntil!.isBefore(until)) trialUntil = until;
+        badges.add('streak-$streak');
+        rewardMessage =
+            '$streak gün üst üste geldin! Ödül olarak 24 saat Premium açıldı ve seri rozeti kazandın.';
+      }
     }
     _recompute();
+    if (rewardMessage != null) await _save();
   }
 
   void _recompute() {

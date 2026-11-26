@@ -10,6 +10,8 @@ import '../widgets/sprites.dart';
 import '../widgets/surface.dart';
 import 'detail.dart';
 import 'premium.dart';
+import '../widgets/share_card.dart';
+import '../widgets/extras.dart';
 import '../services/pdf_export.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -85,7 +87,11 @@ class HomeScreen extends StatelessWidget {
         _pad(const _NeverCard()),
         const SizedBox(height: 24),
         const _Performance(),
-        const SizedBox(height: 81),
+        const SizedBox(height: 40),
+        _pad(const WeekStrip()),
+        const SizedBox(height: 16),
+        _pad(const MoonCard()),
+        const SizedBox(height: 56),
         _pad(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text('Gökyüzünde neler oluyor', style: T.monoTitle),
           const SizedBox(height: 6),
@@ -347,7 +353,9 @@ class _NeverCard extends StatelessWidget {
   const _NeverCard();
   @override
   Widget build(BuildContext context) {
-    return Pearl(
+    return ShareCard(
+      text: 'Bugün asla yapma: ${app.neverToday}',
+      child: Pearl(
       pal: Pal.red,
       radius: 23,
       sheenAt: const Alignment(.9, -.9),
@@ -364,9 +372,10 @@ class _NeverCard extends StatelessWidget {
         Row(children: [
           Text(todayTag, style: T.small.copyWith(color: Colors.white54)),
           const Spacer(),
-          const ShareIcon(size: 12.5),
+          const ShareTap(child: ShareIcon(size: 12.5)),
         ]),
       ]),
+    ),
     );
   }
 }
@@ -451,8 +460,10 @@ class _PerformanceState extends State<_Performance> {
                   turns: i == front
                       ? 0
                       : (i == (front + 2) % 3 ? 4.5 / 360 : -4 / 360),
-                  child: _PerfCard(
-                      data: cards[i], isFront: i == front, cw: cw),
+                  child: ShareCard(
+                    text: '${cards[i].$1}: %${cards[i].$2} ${cards[i].$3}',
+                    child: _PerfCard(
+                      data: cards[i], isFront: i == front, cw: cw)),
                 ),
               ),
           ]),
@@ -544,7 +555,7 @@ class _PerfCard extends StatelessWidget {
               Text(todayTag,
                   style: T.small.copyWith(color: Colors.white70)),
               const Spacer(),
-              const ShareIcon(size: 12.5),
+              const ShareTap(child: ShareIcon(size: 12.5)),
             ]),
           ),
         ],
@@ -628,7 +639,9 @@ class _MoveFoldersState extends State<_MoveFolders> {
                   height: 227 + top,
                   child: GestureDetector(
                     onTap: () => setState(() => active = i),
-                    child: Pearl(
+                    child: ShareCard(
+                     text: '${app.moves[i].$1}: ${app.moves[i].$2}',
+                     child: Pearl(
                       pal: pals[i],
                       shadowAlpha: depth == 0 ? .45 : .15,
                       sheenAt: const Alignment(.45, .35),
@@ -678,8 +691,9 @@ class _MoveFoldersState extends State<_MoveFolders> {
                           ),
                         if (depth == 0)
                           const Positioned(
-                              right: 22, bottom: 20, child: ShareIcon(size: 12.5)),
+                              right: 16, bottom: 14, child: ShareTap(child: ShareIcon(size: 12.5))),
                       ]),
+                    ),
                     ),
                   ),
                 );

@@ -201,7 +201,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: const Color(0xFF9C8BE8),
                     count: 60,
                     child: Sprite(
-                        b.startsWith('ingress')
+                        b.startsWith('streak')
+                            ? 'star'
+                            : b.startsWith('ingress')
                             ? 'sun'
                             : b.contains('saturn')
                                 ? 'saturn'
