@@ -6,6 +6,7 @@ import 'data/sample.dart';
 import 'screens/chat.dart';
 import 'screens/home.dart';
 import 'screens/premium.dart';
+import 'services/backend.dart';
 import 'screens/profile.dart';
 import 'screens/relations.dart';
 import 'theme.dart';
@@ -21,6 +22,7 @@ Future<void> main() async {
     fixedDay = DateTime.tryParse(Uri.base.queryParameters['date'] ?? '');
   }
   await app.load(overrideToday: fixedDay);
+  await Backend.init();
   Purchases.init();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   runApp(const EmuAstroApp());

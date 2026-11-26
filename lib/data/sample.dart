@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../astro/ephemeris.dart';
 import '../astro/interpret.dart';
+import '../services/backend.dart';
 
 export '../astro/interpret.dart'
     show SkyEvent, BirthData, Chart, scoreCats, scoreLabel, reportSections, reportText;
@@ -261,11 +262,13 @@ class AppData extends ChangeNotifier {
   void setUsername(String u) {
     username = u;
     _commit();
+    Backend.syncProfile().catchError((_) {});
   }
 
   void setPhone(String p) {
     phone = p;
     _commit();
+    Backend.syncProfile().catchError((_) {});
   }
 
   void addFriend(Friend f) {
@@ -340,6 +343,54 @@ class AppData extends ChangeNotifier {
     chat.add(ChatMsg(false, answer(chart, q, DateTime.now())));
     _commit();
     return null;
+  }
+
+  // ---------- sunucu varsa sunucu, yoksa yerel ----------
+
+  Future<String?> askAsync(String q) async {
+    if (!Backend.enabled) return ask(q);
+    try {
+      final a = await Backend.ask(q);
+      chat.add(ChatMsg(true, q));
+      chat.add(ChatMsg(false, a));
+      _commit();
+      return null;
+    } catch (e) {
+      final m = '$e';
+      if (m.contains('limit')) {
+        return premium
+            ? 'Bugünkü 5 soru hakkını kullandın.'
+            : 'Ücretsiz planda günde 1 soru hakkın var. Premium ile günde 5 soru sorabilirsin.';
+      }
+      return ask(q); // bağlantı yoksa yerel motor
+    }
+  }
+
+  Future<String?> createGiftCodeAsync() async {
+    if (!Backend.enabled) return createGiftCode();
+    try {
+      final c = await Backend.createGiftCode();
+      giftsLeft = (giftsLeft - 1).clamp(0, 3);
+      sentCodes.add(c);
+      _commit();
+      return c;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<String?> redeemCodeAsync(String code) async {
+    if (!Backend.enabled) return redeemCode(code);
+    try {
+      await Backend.redeemGiftCode(code);
+      return null;
+    } on Exception catch (e) {
+      final m = '$e';
+      for (final k in ['Kod geçersiz', 'Kendi kodunu kullanamazsın', 'Bu kod kullanılmış']) {
+        if (m.contains(k)) return '$k.';
+      }
+      return 'Kod şu an doğrulanamadı.';
+    }
   }
 
   Future<void> resetAll() async {

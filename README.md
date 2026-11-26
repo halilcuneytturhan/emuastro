@@ -30,3 +30,21 @@ Web önizlemede `?tab=0|1|2&scroll=<px>&compact=1` parametreleriyle sekme, kayd�
 - `lib/widgets/common.dart` – rozet, etkinlik bandı, yüzen alt menü, sohbet ikonu
 - `lib/screens/` – sekmeler ve detay ekranları
 - `lib/data/sample.dart` – değiştirilebilir örnek veriler
+
+## Supabase (isteğe bağlı sunucu)
+
+Sunucu ayarları verilmezse uygulama tamamen yerel çalışır. Ayrı bir EmuAstro projesiyle bağlamak için:
+
+1. supabase.com'da yeni proje aç. **Authentication > Providers > Anonymous** girişini aç.
+2. SQL Editor'da `supabase/schema.sql` dosyasını çalıştır (profil, hediye kodu, rehber eşleştirme, sohbet kotası, bildirim jetonları; hepsi RLS'li).
+3. Sohbet fonksiyonu:
+   ```bash
+   supabase link --project-ref <proje-ref>
+   supabase secrets set ANTHROPIC_API_KEY=...   # anahtarı yalnız terminale yaz
+   supabase functions deploy astro-chat
+   ```
+4. Uygulamayı çalıştır:
+   ```bash
+   flutter run --dart-define=SUPABASE_URL=https://<proje-ref>.supabase.co \
+               --dart-define=SUPABASE_ANON_KEY=<publishable anon key>
+   ```

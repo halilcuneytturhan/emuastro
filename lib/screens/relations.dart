@@ -26,7 +26,8 @@ class _RelationsScreenState extends State<RelationsScreen> {
       .push(MaterialPageRoute(builder: (_) => FriendReport(friend: f)));
 
   Future<void> _sendGift() async {
-    final code = app.createGiftCode();
+    final code = await app.createGiftCodeAsync();
+    if (!mounted) return;
     if (code == null) {
       showInfo(context, 'Hediye hakkın kalmadı', 'En fazla 3 arkadaşına hediye gönderebilirsin.');
       return;
@@ -57,7 +58,8 @@ class _RelationsScreenState extends State<RelationsScreen> {
               ],
             ));
     if (code == null || !mounted) return;
-    final err = app.redeemCode(code);
+    final err = await app.redeemCodeAsync(code);
+    if (!mounted) return;
     showInfo(context, err == null ? 'Premium açıldı' : 'Kod kullanılamadı',
         err ?? '3 gün boyunca tüm Premium özellikler açık. İyi keşifler!');
   }

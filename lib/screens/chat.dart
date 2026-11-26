@@ -23,9 +23,10 @@ class _ChatScreenState extends State<ChatScreen> {
     'Enerjimi nasıl yükseltirim?',
   ];
 
-  void _send(String q) {
+  Future<void> _send(String q) async {
     if (q.trim().isEmpty) return;
-    final err = app.ask(q.trim());
+    final err = await app.askAsync(q.trim());
+    if (!mounted) return;
     if (err != null) {
       showInfo(context, 'Soru hakkın doldu', err);
       if (!app.premium) {
