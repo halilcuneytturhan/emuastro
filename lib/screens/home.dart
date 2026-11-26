@@ -9,6 +9,8 @@ import '../widgets/dots.dart';
 import '../widgets/sprites.dart';
 import '../widgets/surface.dart';
 import 'detail.dart';
+import 'premium.dart';
+import '../services/pdf_export.dart';
 
 class HomeScreen extends StatelessWidget {
   final ScrollController controller;
@@ -20,6 +22,12 @@ class HomeScreen extends StatelessWidget {
     final d = app.today;
     final dateLabel = trUpper(
         '${d.day} ${trMonths[d.month - 1]} ${trDays[d.weekday - 1]}');
+    final events = app.events;
+    final banner = events.isEmpty
+        ? null
+        : (events.toList()
+              ..sort((a, b) => a.date.difference(d).abs().compareTo(b.date.difference(d).abs())))
+            .first;
     return ListView(
       controller: controller,
       padding: EdgeInsets.only(top: top + 25.5, bottom: 140),
@@ -39,8 +47,10 @@ class HomeScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 3, right: 10),
               child: GestureDetector(
-                onTap: () => showInfo(context, 'Bildirimler',
-                    'İkizler Dolunayı etkilerin hazır. Satürn 11 Aralık’ta düz harekete geçiyor.'),
+                onTap: () => showInfo(context, 'Bildirimler', [
+                  for (final e in events) '• ${e.title} (${e.date.day} ${trMonths[e.date.month - 1]}): etkilerin hazır.',
+                  '• Bugünkü yaşam haritan: Fırsat ve akış %${app.day.scores[0]}.',
+                ].join('\n')),
                 child: SizedBox(
                   width: 24,
                   height: 24,
@@ -62,8 +72,9 @@ class HomeScreen extends StatelessWidget {
           ]),
         ),
         const SizedBox(height: 24),
-        _pad(EventBand(app.events[1], Pal.goldBand,
-            onTap: () => openEvent(context, app.events[1], Pal.goldBand))),
+        if (banner != null)
+          _pad(EventBand(banner, palForEvent(banner),
+              onTap: () => openEvent(context, banner, palForEvent(banner)))),
         const SizedBox(height: 16),
         _pad(const _ChartFolders()),
         const SizedBox(height: 23),
@@ -77,10 +88,9 @@ class HomeScreen extends StatelessWidget {
           Text('Bu dönemin olayları ve senin haritana etkileri',
               style: T.body.copyWith(fontSize: 12.6)),
           const SizedBox(height: 11),
-          for (final (i, e) in app.events.indexed) ...[
-            EventBand(e, [Pal.redBand, Pal.goldBand, Pal.greenBand][i],
-                onTap: () => openEvent(
-                    context, e, [Pal.redBand, Pal.goldBand, Pal.greenBand][i])),
+          for (final e in events) ...[
+            EventBand(e, palForEvent(e),
+                onTap: () => openEvent(context, e, palForEvent(e))),
             const SizedBox(height: 12),
           ],
           const SizedBox(height: 10),
@@ -104,8 +114,15 @@ class HomeScreen extends StatelessWidget {
             height: 61,
             color: Colors.black,
             trailing: const ShareIcon(size: 13),
-            onTap: () => showInfo(context, 'PDF hazırlanıyor',
-                'Tüm başlıklar tek dosyada toplanıyor. Paylaş menüsünden Dosyalar’a kaydedebilirsin.'))),
+            onTap: () async {
+              try {
+                await exportPdf();
+              } catch (e) {
+                if (context.mounted) {
+                  showInfo(context, 'PDF', 'PDF oluşturulamadı: $e');
+                }
+              }
+            })),
         const SizedBox(height: 14),
         _pad(Text(
             'Tüm başlıklar tek dosyada. Paylaş menüsünden Dosyalar’a kaydedebilirsin.',
@@ -121,6 +138,14 @@ class HomeScreen extends StatelessWidget {
 
 Widget _pad(Widget w) =>
     Padding(padding: const EdgeInsets.symmetric(horizontal: kSide), child: w);
+
+Pal palForEvent(SkyEvent e) => switch (e.kind) {
+      'sun' => Pal.redBand,
+      'moon' => Pal.goldBand,
+      _ => Pal.greenBand,
+    };
+
+String get todayTag => '${app.today.day} ${trMonths[app.today.month - 1]} · emuastro';
 
 void openEvent(BuildContext context, SkyEvent e, Pal pal) =>
     Navigator.of(context).push(MaterialPageRoute(
@@ -241,7 +266,9 @@ class _ChartFolderFront extends StatelessWidget {
           DotText('${app.unlocked}/${app.totalSections}', pitch: 6.75),
           const SizedBox(height: 12),
           Text(
-              '${app.unlocked} bölüm açık · ${app.totalSections - app.unlocked} bölüm Premium\'da',
+              app.premium
+                  ? 'Tüm ${app.totalSections} bölüm açık'
+                  : '${app.unlocked} bölüm açık · ${app.totalSections - app.unlocked} bölüm Premium\'da',
               style: const TextStyle(
                   fontFamily: 'Figtree',
                   fontSize: 12.6,
@@ -279,10 +306,13 @@ class _ChartFolderFront extends StatelessWidget {
                 height: 1.3,
                 color: Colors.white.withValues(alpha: .6))),
       ),
+      if (!app.premium)
       Positioned(
         right: 22,
         bottom: 22,
-        child: Container(
+        child: GestureDetector(
+         onTap: () => openPremium(context),
+         child: Container(
           width: 88,
           height: 27,
           decoration: BoxDecoration(
@@ -302,6 +332,7 @@ class _ChartFolderFront extends StatelessWidget {
                       color: C.ink)),
             ),
           ]),
+        ),
         ),
       ),
     ]);
@@ -327,7 +358,7 @@ class _NeverCard extends StatelessWidget {
         Text(app.neverToday, style: T.cardBody),
         const SizedBox(height: 18),
         Row(children: [
-          Text('25 Kasım · emuastro', style: T.small.copyWith(color: Colors.white54)),
+          Text(todayTag, style: T.small.copyWith(color: Colors.white54)),
           const Spacer(),
           const ShareIcon(size: 12.5),
         ]),
@@ -344,11 +375,11 @@ class _Performance extends StatefulWidget {
 
 class _PerformanceState extends State<_Performance> {
   int front = 0;
-  static const cards = [
-    ('Fırsat ve akış', 60, 'Güçlü', Pal.gold),
-    ('Zihin ve odak', 48, 'Dengeli', Pal.navy),
-    ('Enerji ve beden', 72, 'Yüksek', Pal.deepGreen),
-  ];
+  static const _pals = [Pal.gold, Pal.navy, Pal.deepGreen];
+  List<(String, int, String, Pal)> get cards => [
+        for (var c = 0; c < 3; c++)
+          (scoreCats[c].$1, app.day.scores[c], scoreLabel(app.day.scores[c]), _pals[c])
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -500,13 +531,13 @@ class _PerfCard extends StatelessWidget {
               right: 20,
               top: 252,
               height: 56,
-              child: CustomPaint(painter: _TrendPainter(app.trend))),
+              child: CustomPaint(painter: _TrendPainter(app.day.trends[scoreCats.indexWhere((e) => e.$1 == title)]))),
           Positioned(
             left: 20,
             right: 20,
             bottom: 18,
             child: Row(children: [
-              Text('25 Kasım · emuastro',
+              Text(todayTag,
                   style: T.small.copyWith(color: Colors.white70)),
               const Spacer(),
               const ShareIcon(size: 12.5),
@@ -636,7 +667,7 @@ class _MoveFoldersState extends State<_MoveFolders> {
                                           height: 1.45,
                                           color: Colors.white)),
                                   const SizedBox(height: 12),
-                                  Text('25 Kasım · emuastro',
+                                  Text(todayTag,
                                       style: T.small.copyWith(
                                           color: Colors.white60)),
                                 ]),

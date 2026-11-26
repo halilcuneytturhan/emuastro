@@ -1,23 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:emuastro/main.dart';
+import 'package:emuastro/data/sample.dart';
+import 'package:emuastro/astro/interpret.dart' as astro;
 
 void main() {
-  testWidgets('ana sekmeler açılır ve etiketler görünür', (t) async {
+  test('örnek harita: Güneş Aslan, Ay Akrep, Yükselen Başak', () {
+    final c = astro.Chart.of(astro.BirthData(
+        'buket', DateTime(2004, 7, 25, 9, 30), 'İstanbul, Türkiye'));
+    expect(c.signName('sun'), 'Aslan');
+    expect(c.signName('moon'), 'Akrep');
+    expect(c.signName('asc'), 'Başak');
+  });
+
+  test('hediye kodu: üretilen kod başka cihazda geçerli, kendi kodu reddedilir', () {
+    final a = AppData();
+    final code = a.createGiftCode()!;
+    expect(a.giftsLeft, 2);
+    expect(a.redeemCode(code), isNotNull); // kendi kodu
+    final b = AppData();
+    expect(b.redeemCode('EMU-AAAAAA-A'), isNotNull);
+    expect(b.redeemCode(code), isNull);
+    expect(b.premium, isTrue);
+  });
+
+  test('ücretsiz planda günde 1 soru', () {
+    final a = AppData();
+    expect(a.ask('Bugün nasıl?'), isNull);
+    expect(a.chat.length, 2);
+    expect(a.ask('Yine?'), isNotNull);
+  });
+
+  testWidgets('dört sekme açılır', (t) async {
     t.view.physicalSize = const Size(430 * 3, 932 * 3);
     t.view.devicePixelRatio = 3;
     await t.pumpWidget(const EmuAstroApp());
     await t.pump(const Duration(milliseconds: 500));
-    for (final s in ['YILDIZ', 'AY', 'Kişisel Haritan', 'Merhaba, buket']) {
-      final f = find.text(s);
-      expect(f, findsWidgets, reason: s);
-      // ignore: avoid_print
-      print('$s -> ${t.getRect(f.first)}');
-    }
-    await t.tap(find.text('İlişkiler').last);
+    expect(find.text('Kişisel Haritan'), findsWidgets);
+    await t.tap(find.bySemanticsLabel('İlişkiler'));
     await t.pump(const Duration(milliseconds: 500));
     expect(find.text('Rehberini bağla', skipOffstage: false), findsWidgets);
-    await t.tap(find.text('Profil').last);
+    await t.tap(find.bySemanticsLabel('Sor'));
+    await t.pump(const Duration(milliseconds: 500));
+    expect(find.text('Haritana bir soru sor…', skipOffstage: false), findsWidgets);
+    await t.tap(find.bySemanticsLabel('Profil'));
     await t.pump(const Duration(milliseconds: 500));
     expect(find.text('Transit', skipOffstage: false), findsWidgets);
   });

@@ -8,6 +8,9 @@ import '../widgets/sprites.dart';
 import '../widgets/surface.dart';
 import '../widgets/wheel.dart';
 import 'detail.dart';
+import 'friends.dart' show birthForm;
+import 'premium.dart';
+import 'settings.dart';
 
 class ProfileScreen extends StatefulWidget {
   final ScrollController controller;
@@ -47,8 +50,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: const Sprite('pencil', size: 17, cells: 14)),
             const Spacer(),
             GestureDetector(
-              onTap: () => showInfo(context, 'Ayarlar',
-                  'Bildirimler, dil, gizlilik ve hesap ayarları burada yer alacak.'),
+              onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const SettingsScreen())),
               child: const Padding(
                 padding: EdgeInsets.only(right: 12),
                 child: Sprite('gear', size: 19, cells: 16),
@@ -57,8 +60,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ])),
           const SizedBox(height: 22),
           _p(GestureDetector(
-            onTap: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (_) => const DetailScreen())),
+            onTap: () => app.premium
+                ? Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => const DetailScreen()))
+                : openPremium(context),
             child: ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 97),
               child: Pearl(
@@ -164,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(width: 15),
             GestureDetector(
               onTap: () => showInfo(context, 'Rozetler',
-                  'Gökyüzü olaylarının etkilerini okuyarak rozet kazanırsın.'),
+                  'Ana Sayfa’daki gökyüzü olaylarına dokun, etkisini oku ve rozeti koleksiyonuna ekle. Şu ana kadar ${app.badges.length} rozet kazandın.'),
               child: Container(
                 width: 16,
                 height: 16,
@@ -188,18 +193,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.only(left: kSide + 15, right: kSide + 6),
               child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(
-                  3,
-                  (_) => const DottedCircle(
-                        size: 92,
-                        fill: Color(0xFFEDEDF0),
-                        color: Color(0xFFA3A2A8),
-                        count: 60,
-                        child: DotText('?',
-                            pitch: 3.0,
-                            color: Color(0xFF8E8D93),
-                            glow: 0),
-                      )))),
+              children: [
+                for (final b in app.badges.toList().reversed.take(3))
+                  DottedCircle(
+                    size: 92,
+                    fill: const Color(0xFFF3EFFF),
+                    color: const Color(0xFF9C8BE8),
+                    count: 60,
+                    child: Sprite(
+                        b.startsWith('ingress')
+                            ? 'sun'
+                            : b.contains('saturn')
+                                ? 'saturn'
+                                : 'moon',
+                        size: 40,
+                        cells: 22),
+                  ),
+                for (var k = app.badges.length; k < 3; k++)
+                  const DottedCircle(
+                    size: 92,
+                    fill: Color(0xFFEDEDF0),
+                    color: Color(0xFFA3A2A8),
+                    count: 60,
+                    child: DotText('?',
+                        pitch: 3.0, color: Color(0xFF8E8D93), glow: 0),
+                  ),
+              ])),
           const SizedBox(height: 33),
           _p(const Divider(height: 1, color: Color(0xFFE9E8EE))),
           const SizedBox(height: 39),
@@ -244,12 +263,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 23),
           _p(_NavBand(
             pal: Pal.charcoal,
-            sprite: 'phone',
-            kicker: 'WİDGET',
-            title: 'Ana ekranına ekle',
-            sub: 'Günün kodunu her an gör',
-            onTap: () => showInfo(context, 'Widget',
-                'Ana ekranına uzun bas, + simgesine dokun ve EmuAstro widget’ını seç.'),
+            sprite: 'gear',
+            kicker: 'AYARLAR',
+            title: 'Hesap ve gizlilik',
+            sub: 'Premium, kullanıcı adı, verilerini yönet',
+            onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SettingsScreen())),
           )),
         ],
       ),
@@ -278,80 +297,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-void editProfile(BuildContext context) {
+Future<void> editProfile(BuildContext context) async {
   final pr = app.profile;
-  final name = TextEditingController(text: pr.name);
-  final time = TextEditingController(text: pr.time);
-  final place = TextEditingController(text: pr.place);
-  var birth = pr.birth;
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (ctx) => StatefulBuilder(
-      builder: (ctx, setS) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
-        child: Container(
-          margin: const EdgeInsets.all(12),
-          padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
-          decoration: BoxDecoration(
-              color: C.page, borderRadius: BorderRadius.circular(28)),
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Profili düzenle', style: T.monoTitleBold),
-                const SizedBox(height: 14),
-                TextField(
-                    controller: name,
-                    decoration: const InputDecoration(labelText: 'İsim')),
-                const SizedBox(height: 8),
-                GestureDetector(
-                  onTap: () async {
-                    final d = await showDatePicker(
-                        context: ctx,
-                        initialDate: birth,
-                        firstDate: DateTime(1920),
-                        lastDate: DateTime(2026, 12, 31));
-                    if (d != null) setS(() => birth = d);
-                  },
-                  child: InputDecorator(
-                    decoration:
-                        const InputDecoration(labelText: 'Doğum tarihi'),
-                    child: Text(_fmt(birth)),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                    controller: time,
-                    decoration: const InputDecoration(labelText: 'Saat')),
-                const SizedBox(height: 8),
-                TextField(
-                    controller: place,
-                    decoration: const InputDecoration(labelText: 'Yer')),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: FilledButton(
-                    style: FilledButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        shape: const StadiumBorder()),
-                    onPressed: () {
-                      app.updateProfile(name.text.trim().isEmpty ? pr.name : name.text.trim(),
-                          birth, time.text, place.text);
-                      Navigator.pop(ctx);
-                    },
-                    child: const Text('Kaydet',
-                        style: TextStyle(
-                            fontFamily: 'Figtree', fontWeight: FontWeight.w800)),
-                  ),
-                ),
-              ]),
-        ),
-      ),
-    ),
-  );
+  final r = await birthForm(context,
+      title: 'Profili düzenle',
+      name: pr.name,
+      birth: pr.birth,
+      time: pr.time,
+      place: pr.place,
+      note: app.canEditBirth
+          ? 'Yükselen ve evler bu bilgilerden hesaplanır. Doğum bilgisini ayda bir kez düzeltebilirsin.'
+          : 'Doğum bilgisini bu ay düzelttin; şimdilik yalnızca ismini değiştirebilirsin.');
+  if (r == null) return;
+  final (n, b, t, pl, _) = r;
+  final err = app.updateProfile(n, b, t, pl);
+  if (err != null && context.mounted) showInfo(context, 'Değiştirilemedi', err);
 }
 
 String _fmt(DateTime d) =>
@@ -451,7 +411,18 @@ class _GiftBoxState extends State<_GiftBox> with SingleTickerProviderStateMixin 
     return GestureDetector(
       onTap: () {
         setState(() => open = !open);
-        open ? ac.forward() : ac.reverse();
+        if (open) {
+          ac.forward();
+          app.openBox();
+          Future.delayed(const Duration(milliseconds: 700), () {
+            if (mounted) {
+              showInfo(context, 'Bugünün önerileri',
+                  app.boxTips.map((t) => '• $t').join('\n\n'));
+            }
+          });
+        } else {
+          ac.reverse();
+        }
       },
       child: Column(children: [
         SizedBox(

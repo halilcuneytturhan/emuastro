@@ -15,7 +15,9 @@ class EventBadge extends StatelessWidget {
   final String kind;
   final Pal pal;
   final double size;
-  const EventBadge(this.kind, this.pal, {super.key, this.size = 62});
+  final bool locked;
+  const EventBadge(this.kind, this.pal,
+      {super.key, this.size = 62, this.locked = true});
   @override
   Widget build(BuildContext context) {
     return SizedBox.square(
@@ -25,6 +27,7 @@ class EventBadge extends StatelessWidget {
         Center(
             child: Sprite(kind == 'moon' ? 'moonSmall' : kind,
                 size: size * .2, cells: 12, shadow: false)),
+        if (locked)
         Positioned(
             right: size * .17,
             bottom: size * .2,
@@ -170,7 +173,7 @@ class EventBand extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(e.sub, style: T.bandSub),
                 ])),
-            EventBadge(e.kind, pal),
+            EventBadge(e.kind, pal, locked: !app.badges.contains(e.key)),
             const SizedBox(width: 18),
           ]),
         ),

@@ -6,6 +6,10 @@ import '../data/sample.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/sprites.dart';
+import 'package:share_plus/share_plus.dart';
+import '../astro/interpret.dart' show synastry;
+import 'friends.dart';
+import 'settings.dart' show createUsername;
 
 class RelationsScreen extends StatefulWidget {
   final ScrollController controller;
@@ -16,36 +20,80 @@ class RelationsScreen extends StatefulWidget {
 
 class _RelationsScreenState extends State<RelationsScreen> {
   int seg = 0;
-  final friends = <String>[];
+  void _addFriend() => addFriendFlow(context, partner: seg == 1);
 
-  void _addFriend() async {
+  void _openFriend(Friend f) => Navigator.of(context)
+      .push(MaterialPageRoute(builder: (_) => FriendReport(friend: f)));
+
+  Future<void> _sendGift() async {
+    final code = app.createGiftCode();
+    if (code == null) {
+      showInfo(context, 'Hediye hakkın kalmadı', 'En fazla 3 arkadaşına hediye gönderebilirsin.');
+      return;
+    }
+    try {
+      await SharePlus.instance.share(ShareParams(
+          text: 'Sana 3 günlük EmuAstro Premium hediye ediyorum! Uygulamada İlişkiler > “Sana hediye mi geldi? Kodu gir” bölümüne şu kodu yaz: $code'));
+    } catch (_) {
+      if (mounted) showInfo(context, 'Hediye kodun', '$code\nKodu arkadaşınla paylaş; 3 gün Premium açılır.');
+    }
+  }
+
+  Future<void> _redeem() async {
     final c = TextEditingController();
-    final name = await showDialog<String>(
+    final code = await showDialog<String>(
         context: context,
         builder: (ctx) => AlertDialog(
               backgroundColor: C.page,
-              title: const Text('Arkadaş ekle', style: T.monoTitleBold),
+              title: const Text('Hediye kodu', style: T.monoTitleBold),
               content: TextField(
                   controller: c,
                   autofocus: true,
-                  decoration:
-                      const InputDecoration(hintText: 'Kullanıcı adı veya isim')),
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: const InputDecoration(hintText: 'EMU-XXXXXX-X')),
               actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(ctx),
-                    child: const Text('Vazgeç')),
-                TextButton(
-                    onPressed: () => Navigator.pop(ctx, c.text.trim()),
-                    child: const Text('Ekle')),
+                TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Vazgeç')),
+                TextButton(onPressed: () => Navigator.pop(ctx, c.text), child: const Text('Kullan')),
               ],
             ));
-    if (name != null && name.isNotEmpty) setState(() => friends.add(name));
+    if (code == null || !mounted) return;
+    final err = app.redeemCode(code);
+    showInfo(context, err == null ? 'Premium açıldı' : 'Kod kullanılamadı',
+        err ?? '3 gün boyunca tüm Premium özellikler açık. İyi keşifler!');
+  }
+
+  Future<void> _addPhone() async {
+    final c = TextEditingController(text: app.phone ?? '');
+    final v = await showDialog<String>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              backgroundColor: C.page,
+              title: const Text('Numaranı ekle', style: T.monoTitleBold),
+              content: Column(mainAxisSize: MainAxisSize.min, children: [
+                TextField(
+                    controller: c,
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(hintText: '+90 5xx xxx xx xx')),
+                const SizedBox(height: 10),
+                Text('Numaran yalnızca bu cihazda saklanır.', style: T.body.copyWith(fontSize: 11.5)),
+              ]),
+              actions: [
+                TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Vazgeç')),
+                TextButton(onPressed: () => Navigator.pop(ctx, c.text.trim()), child: const Text('Kaydet')),
+              ],
+            ));
+    if (v == null) return;
+    if (!RegExp(r'^\+?[0-9 ]{10,16}$').hasMatch(v)) {
+      if (mounted) showInfo(context, 'Numara geçersiz', 'Lütfen ülke koduyla birlikte gir.');
+      return;
+    }
+    app.setPhone(v);
   }
 
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.of(context).padding.top;
-    return Stack(children: [
+    return ListenableBuilder(listenable: app, builder: (context, _) => Stack(children: [
       ListView(
         controller: widget.controller,
         padding: EdgeInsets.only(top: top + 91, bottom: 150),
@@ -58,7 +106,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
         right: 0,
         child: Center(child: _Segment(seg, (i) => setState(() => seg = i))),
       ),
-    ]);
+    ]));
   }
 
   Widget _p(Widget w) =>
@@ -73,12 +121,11 @@ class _RelationsScreenState extends State<RelationsScreen> {
               const Text('İlişkiler', style: T.display),
               const SizedBox(height: 3),
               GestureDetector(
-                onTap: () => showInfo(context, 'Kullanıcı adı',
-                    'Arkadaşların seni kullanıcı adınla bulabilir. Örn: @${app.profile.name}'),
+                onTap: () => createUsername(context),
                 child: Row(children: [
                   const Sprite('at', size: 17, cells: 14),
                   const SizedBox(width: 7),
-                  Text('Kullanıcı adı oluştur',
+                  Text(app.username == null ? 'Kullanıcı adı oluştur' : '@${app.username}',
                       style: T.heading.copyWith(
                           color: C.accent, fontWeight: FontWeight.w700, fontSize: 13.4)),
                 ]),
@@ -129,12 +176,11 @@ class _RelationsScreenState extends State<RelationsScreen> {
             ]),
             const SizedBox(height: 16),
             Text(
-                'Bağlarsan numaralar telefonunda şifrelenir; bu sürümde hiçbir veri sunucuya gönderilmez, rehberin kaydedilmez.',
+                'Rehberin yalnızca bu cihazda okunur; seçtiğin kişiyi doğum bilgisiyle eklersin. Hiçbir numara sunucuya gönderilmez, rehberin kaydedilmez.',
                 style: T.body.copyWith(fontSize: 12.8, height: 1.3)),
             const SizedBox(height: 14),
             GestureDetector(
-              onTap: () => showInfo(context, 'Rehber erişimi',
-                  'Rehber eşleştirmesi henüz etkin değil. Bu sürümde rehberine erişilmez ve sunucuya hiçbir numara ya da e-posta gönderilmez.'),
+              onTap: () => pickFromContacts(context),
               child: Container(
                 width: 134,
                 height: 41,
@@ -155,8 +201,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
         )),
         const SizedBox(height: 13),
         _p(GestureDetector(
-          onTap: () => showInfo(context, 'Numaranı ekle',
-              'Numaranı eklediğinde, rehberinde seni kayıtlı olanlar seni burada görebilir. Bu sürümde numara cihazda kalır.'),
+          onTap: _addPhone,
           child: Container(
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -170,10 +215,10 @@ class _RelationsScreenState extends State<RelationsScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Numaranı ekle',
+                      Text(app.phone == null ? 'Numaranı ekle' : app.phone!,
                           style: T.heading.copyWith(fontSize: 13.6, fontWeight: FontWeight.w800)),
                       const SizedBox(height: 2),
-                      Text('Rehberinde seni kayıtlı olanlar seni burada görsün.',
+                      Text(app.phone == null ? 'Hediye ve davetlerde seni tanısınlar.' : 'Numaran cihazında kayıtlı · değiştirmek için dokun',
                           style: T.body.copyWith(fontSize: 9.2, height: 1.2)),
                     ]),
               ),
@@ -201,8 +246,10 @@ class _RelationsScreenState extends State<RelationsScreen> {
                         color: C.ink)),
               ]),
             ),
-            for (final f in friends)
-              Padding(
+            for (final f in app.friends.where((f) => !f.partner))
+              GestureDetector(
+               onTap: () => _openFriend(f),
+               child: Padding(
                 padding: const EdgeInsets.only(left: 14),
                 child: Column(children: [
                   Container(
@@ -213,18 +260,19 @@ class _RelationsScreenState extends State<RelationsScreen> {
                         gradient: LinearGradient(
                             colors: [Color(0xFF8E6BC9), Color(0xFF4C3585)])),
                     child: Center(
-                        child: Text(f.characters.first.toUpperCase(),
+                        child: Text(f.data.name.characters.first.toUpperCase(),
                             style: T.monoTitleBold
                                 .copyWith(color: Colors.white))),
                   ),
                   const SizedBox(height: 4),
-                  Text(f,
+                  Text(f.data.name,
                       style: const TextStyle(
                           fontFamily: 'Figtree',
                           fontWeight: FontWeight.w700,
                           fontSize: 9.6,
                           color: C.ink)),
                 ]),
+              ),
               ),
           ]),
         )),
@@ -253,13 +301,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
         const SizedBox(height: 14),
         Center(
           child: GestureDetector(
-            onTap: () {
-              if (app.giftsLeft == 0) return;
-              app.useGift();
-              setState(() {});
-              showInfo(context, 'Hediye hazır',
-                  'Hediye kodun: EMU-${(1000 + app.giftsLeft * 371) % 9999}\nKodu arkadaşınla paylaş; 3 gün Premium açılır.');
-            },
+            onTap: _sendGift,
             child: Container(
               width: 151,
               height: 50,
@@ -283,8 +325,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
         const SizedBox(height: 15),
         Center(
           child: GestureDetector(
-            onTap: () => showInfo(context, 'Hediye kodu',
-                'Sana gelen kodu girerek 3 günlük Premium denemeni başlatabilirsin.'),
+            onTap: _redeem,
             child: Text('Sana hediye mi geldi? Kodu gir',
                 style: T.body.copyWith(
                     fontSize: 10.4,
@@ -296,7 +337,24 @@ class _RelationsScreenState extends State<RelationsScreen> {
 
   List<Widget> _soulmate(BuildContext context) => [
         ..._header('RUH EŞİ · İLİŞKİLER'),
-        const SizedBox(height: 40),
+        const SizedBox(height: 24),
+        for (final f in app.friends.where((f) => f.partner))
+          _p(GestureDetector(
+            onTap: () => _openFriend(f),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(color: C.panel, borderRadius: BorderRadius.circular(18)),
+              child: Row(children: [
+                const Sprite('venus', size: 26, cells: 16),
+                const SizedBox(width: 14),
+                Expanded(child: Text(f.data.name, style: T.heading)),
+                Text('%${synastry(app.chart, Chart.of(f.data)).$1}', style: T.monoTitleBold.copyWith(fontSize: 16)),
+                const Icon(Icons.chevron_right_rounded),
+              ]),
+            ),
+          )),
+        const SizedBox(height: 16),
         const Center(child: _Doodles(width: 220)),
         const SizedBox(height: 26),
         _p(Text('Ruh eşi raporu',
@@ -310,7 +368,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
         const SizedBox(height: 20),
         Center(
           child: GestureDetector(
-            onTap: _addFriend,
+            onTap: () => addFriendFlow(context, partner: true),
             child: Container(
               width: 170,
               height: 50,

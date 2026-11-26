@@ -1,18 +1,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
+import 'data/sample.dart';
+import 'screens/chat.dart';
 import 'screens/home.dart';
+import 'screens/premium.dart';
 import 'screens/profile.dart';
 import 'screens/relations.dart';
 import 'theme.dart';
-import 'widgets/common.dart';
+import 'widgets/nav.dart';
 import 'widgets/surface.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Grain.init();
+  DateTime? fixedDay;
+  if (kIsWeb) {
+    // Karşılaştırma görüntüleri için: ?date=2026-11-25
+    fixedDay = DateTime.tryParse(Uri.base.queryParameters['date'] ?? '');
+  }
+  await app.load(overrideToday: fixedDay);
+  Purchases.init();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   runApp(const EmuAstroApp());
 }
@@ -54,17 +63,15 @@ class Shell extends StatefulWidget {
 
 class _ShellState extends State<Shell> {
   int tab = 0;
-  bool compact = false;
-  final ctl = [ScrollController(), ScrollController(), ScrollController()];
+  final ctl = List.generate(4, (_) => ScrollController());
 
   @override
   void initState() {
     super.initState();
-    // Karşılaştırma için: ?tab=1&scroll=300&compact=1
+    // Karşılaştırma için: ?tab=0..3&scroll=300
     if (kIsWeb) {
       final q = Uri.base.queryParameters;
-      tab = int.tryParse(q['tab'] ?? '') ?? 0;
-      compact = q['compact'] == '1';
+      tab = (int.tryParse(q['tab'] ?? '') ?? 0).clamp(0, 3);
       final sc = double.tryParse(q['scroll'] ?? '');
       if (sc != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -76,47 +83,38 @@ class _ShellState extends State<Shell> {
     }
   }
 
-  bool _onScroll(ScrollNotification n) {
-    if (n.depth != 0 || n.metrics.axis != Axis.vertical) return false;
-    if (n is UserScrollNotification) {
-      final c = n.direction != ScrollDirection.idle;
-      if (c != compact) setState(() => compact = c);
+  void _select(int i) {
+    if (i == tab && ctl[i].hasClients) {
+      ctl[i].animateTo(0,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutCubic);
     }
-    return false;
+    setState(() => tab = i);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: tab == 2,
       body: PaperBackground(
         child: Stack(children: [
-          NotificationListener<ScrollNotification>(
-            onNotification: _onScroll,
-            child: IndexedStack(index: tab, children: [
+          ListenableBuilder(
+            listenable: app,
+            builder: (context, _) => IndexedStack(index: tab, children: [
               HomeScreen(controller: ctl[0]),
               RelationsScreen(controller: ctl[1]),
-              ProfileScreen(
-                  controller: ctl[2],
-                  openRelations: () => setState(() => tab = 1)),
+              ChatScreen(controller: ctl[2]),
+              ProfileScreen(controller: ctl[3], openRelations: () => _select(1)),
             ]),
           ),
-          FloatingNav(
-            index: tab,
-            compact: compact,
-            onTap: (i) {
-              if (i == tab && ctl[i].hasClients) {
-                ctl[i].animateTo(0,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeOutCubic);
-              }
-              setState(() => tab = i);
-            },
-            onChat: () => showInfo(context, 'EmuAstro’ya sor',
-                'Haritanla ilgili sorularını burada sorabilirsin. Ücretsiz planda günde 1, Premium’da günde 5 soru hakkın var.\n\nÖrnek: “Bu hafta iş görüşmesi için hangi gün daha uygun?”'),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: EmuNavBar(selectedIndex: tab, onSelected: _select),
           ),
         ]),
       ),
     );
   }
 }
-
