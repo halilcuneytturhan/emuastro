@@ -160,6 +160,7 @@ class AppData extends ChangeNotifier {
     final tk = _dayKey(today);
     questionsToday = p.getString('qDay') == tk ? (p.getInt('qCount') ?? 0) : 0;
     boxOpenedDay = p.getString('boxDay');
+    seenEvents = p.getString('seenEvents');
     // seri: art arda açılan günler
     final last = p.getString('lastOpen');
     streak = p.getInt('streak') ?? 1;
@@ -287,6 +288,24 @@ class AppData extends ChangeNotifier {
   }
 
   bool get boxOpenedToday => boxOpenedDay == _dayKey(today);
+
+  /// Uygulama öne gelince tarih değiştiyse günlük içeriği yeniden hesaplar.
+  void refreshDay() {
+    final now = DateTime.now();
+    if (_dayKey(now) == _dayKey(today)) return;
+    today = now;
+    questionsToday = 0;
+    _recompute();
+  }
+
+  String? seenEvents;
+  bool get hasUnseen =>
+      events.isNotEmpty && seenEvents != events.map((e) => e.key).join(',');
+  void markEventsSeen() {
+    seenEvents = events.map((e) => e.key).join(',');
+    _prefs?.setString('seenEvents', seenEvents!);
+    notifyListeners();
+  }
 
   void startTrial(int days) {
     trialUntil = DateTime.now().add(Duration(days: days));

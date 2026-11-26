@@ -22,7 +22,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final twinCtl = ScrollController(initialScrollOffset: 222);
+  final twinCtl = ScrollController();
 
   Widget _p(Widget w) =>
       Padding(padding: const EdgeInsets.symmetric(horizontal: kSide), child: w);

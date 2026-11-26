@@ -47,15 +47,19 @@ class HomeScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 3, right: 10),
               child: GestureDetector(
-                onTap: () => showInfo(context, 'Bildirimler', [
+                onTap: () {
+                  app.markEventsSeen();
+                  showInfo(context, 'Bildirimler', [
                   for (final e in events) '• ${e.title} (${e.date.day} ${trMonths[e.date.month - 1]}): etkilerin hazır.',
                   '• Bugünkü yaşam haritan: Fırsat ve akış %${app.day.scores[0]}.',
-                ].join('\n')),
+                ].join('\n'));
+                },
                 child: SizedBox(
                   width: 24,
                   height: 24,
                   child: Stack(clipBehavior: Clip.none, children: [
                     const Sprite('bell', size: 22, cells: 18),
+                    if (app.hasUnseen)
                     Positioned(
                         right: -2,
                         top: -2,

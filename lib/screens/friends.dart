@@ -10,6 +10,7 @@ import '../widgets/common.dart';
 import '../widgets/dots.dart';
 import '../widgets/surface.dart';
 import 'premium.dart';
+import '../services/backend.dart';
 
 String fmtDate(DateTime d) =>
     '${d.day.toString().padLeft(2, '0')}.${d.month.toString().padLeft(2, '0')}.${d.year}';
@@ -161,8 +162,18 @@ Future<void> pickFromContacts(BuildContext context) async {
       }
       return;
     }
-    final list = await FlutterContacts.getAll();
+    final list = await FlutterContacts.getAll(properties: {ContactProperty.phone});
     if (!context.mounted) return;
+    if (Backend.enabled) {
+      final phones = [for (final c in list) for (final ph in c.phones) ph.number];
+      try {
+        final m = await Backend.matchContacts(phones);
+        if (context.mounted && m.isNotEmpty) {
+          showInfo(context, 'Rehberinde EmuAstro’da olanlar',
+              m.map((u) => '• ${u['name']}${u['username'] != null ? ' (@${u['username']})' : ''}').join('\n'));
+        }
+      } catch (_) {}
+    }
     final picked = await showModalBottomSheet<String>(
         context: context,
         isScrollControlled: true,

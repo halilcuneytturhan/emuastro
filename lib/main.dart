@@ -63,13 +63,14 @@ class Shell extends StatefulWidget {
   State<Shell> createState() => _ShellState();
 }
 
-class _ShellState extends State<Shell> {
+class _ShellState extends State<Shell> with WidgetsBindingObserver {
   int tab = 0;
   final ctl = List.generate(4, (_) => ScrollController());
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     // Karşılaştırma için: ?tab=0..3&scroll=300
     if (kIsWeb) {
       final q = Uri.base.queryParameters;
@@ -83,6 +84,17 @@ class _ShellState extends State<Shell> {
         });
       }
     }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState s) {
+    if (s == AppLifecycleState.resumed) app.refreshDay();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   void _select(int i) {
