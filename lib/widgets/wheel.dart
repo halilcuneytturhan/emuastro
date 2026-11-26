@@ -4,6 +4,23 @@ import 'package:flutter/material.dart';
 
 import '../data/sample.dart';
 import 'sprites.dart';
+import 'common.dart' show showInfo;
+import '../astro/interpret.dart' show planetName, signs;
+
+const planetMeaning = {
+  'sun': 'Özün, kimliğin ve yaşam enerjin. Nerede parlamak istediğini gösterir.',
+  'moon': 'Duyguların, ihtiyaçların ve güvende hissetme biçimin.',
+  'mercury': 'Düşünme, konuşma ve öğrenme tarzın.',
+  'venus': 'Sevgi dilin, zevklerin ve değer verdiklerin.',
+  'mars': 'Enerjin, arzuların ve harekete geçme biçimin.',
+  'jupiter': 'Şansın, büyüme alanın ve inançların.',
+  'saturn': 'Sorumlulukların, sınırların ve olgunlaştığın alan.',
+  'uranus': 'Özgürlük isteğin ve ani değişimler.',
+  'neptune': 'Hayallerin, sezgilerin ve ilham kaynağın.',
+  'pluto': 'Dönüşüm gücün ve derin tutkuların.',
+  'node': 'Ruhsal yönün: bu hayatta büyümeye çağrıldığın yol.',
+  'lilith': 'Bastırılan arzular ve bağımsızlık ihtiyacı.',
+};
 
 const _signGlyph = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'];
 const planetGlyph = {
@@ -79,7 +96,13 @@ class ChartWheel extends StatelessWidget {
       children.add(Positioned(
           left: o.dx - s / 2,
           top: o.dy - s / 2,
-          child: Sprite(_sprite[p.id]!, size: s, cells: small ? 10 : 15, shadow: false)));
+          child: Builder(
+            builder: (ctx) => GestureDetector(
+              onTap: () => showInfo(ctx, planetName[p.id] ?? p.id,
+                  '${signs[(p.lon ~/ 30) % 12]} ${(p.lon % 30).toStringAsFixed(0)}°${p.retro ? ' · retro' : ''} · ${data.chart.house(p.lon)}. ev\n\n${planetMeaning[p.id] ?? ''}'),
+              child: Sprite(_sprite[p.id]!, size: s, cells: small ? 10 : 15, shadow: false),
+            ),
+          )));
       final g = _pos(lon + 4, R * .5);
       children.add(Positioned(
         left: g.dx - 6,

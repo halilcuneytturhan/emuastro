@@ -85,6 +85,28 @@ class AppData extends ChangeNotifier {
   late List<SkyEvent> events;
   late List<Twin> twins;
 
+  bool onboarded = false;
+  bool notificationsOn = true;
+
+  Future<void> finishOnboarding(String name, DateTime b, String t, String place) async {
+    profile
+      ..name = name
+      ..birth = b
+      ..time = t
+      ..place = place;
+    onboarded = true;
+    twinsCache.clear();
+    _recompute();
+    await _save();
+    await _prefs?.setBool('onboarded', true);
+  }
+
+  void setNotifications(bool v) {
+    notificationsOn = v;
+    _prefs?.setBool('notif', v);
+    notifyListeners();
+  }
+
   bool get premium =>
       purchased || (trialUntil != null && trialUntil!.isAfter(DateTime.now()));
   int get unlocked => premium ? totalSections : 1;
@@ -131,6 +153,8 @@ class AppData extends ChangeNotifier {
       return;
     }
     final p = _prefs!;
+    onboarded = p.getBool('onboarded') ?? false;
+    notificationsOn = p.getBool('notif') ?? true;
     final pj = p.getString('profile');
     if (pj != null) {
       final j = jsonDecode(pj) as Map<String, dynamic>;

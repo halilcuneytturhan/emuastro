@@ -11,6 +11,7 @@ import 'detail.dart';
 import 'friends.dart' show birthForm;
 import 'premium.dart';
 import 'settings.dart';
+import 'tools.dart';
 
 class ProfileScreen extends StatefulWidget {
   final ScrollController controller;
@@ -250,6 +251,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 62),
           const _GiftBox(),
           const SizedBox(height: 30),
+          _p(const Divider(height: 1, color: Color(0xFFE9E8EE))),
+          const SizedBox(height: 23),
+          _p(const Text('Araçlar', style: T.monoTitle)),
+          const SizedBox(height: 16),
+          for (final (pal, sp, k, t, sub, page) in [
+            (Pal.purpleBand, 'star', 'PREMIUM', 'Uygun gün bulucu', 'İş, buluşma, taşınma için en iyi günler', const GoodDayFinder() as Widget),
+            (Pal.amber, 'saturn', 'PREMIUM', 'Önümüzdeki 12 ay', 'Büyük gezegenlerin haritana etkisi', const YearForecast() as Widget),
+            (Pal.rose, 'venus', 'ÜCRETSİZ', 'Hızlı uyum testi', 'Doğum tarihiyle uyumunu gör, paylaş', const QuickMatch() as Widget),
+            (Pal.navy, 'moon', 'PAYLAŞ', 'Yılın özeti', 'Senin yılın tek kartta', const YearSummary() as Widget),
+          ]) ...[
+            _p(_NavBand(
+                pal: pal,
+                sprite: sp,
+                kicker: k,
+                title: t,
+                sub: sub,
+                onTap: () => Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => page)))),
+            const SizedBox(height: 14),
+          ],
+          const SizedBox(height: 9),
           _p(const Divider(height: 1, color: Color(0xFFE9E8EE))),
           const SizedBox(height: 23),
           _p(_BirthCard(onEdit: () => editProfile(context))),

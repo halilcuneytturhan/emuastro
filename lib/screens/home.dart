@@ -10,6 +10,7 @@ import '../widgets/sprites.dart';
 import '../widgets/surface.dart';
 import 'detail.dart';
 import 'premium.dart';
+import 'tools.dart' show QuickMatch, YearSummary;
 import '../widgets/share_card.dart';
 import '../widgets/extras.dart';
 import '../services/pdf_export.dart';
@@ -82,6 +83,24 @@ class HomeScreen extends StatelessWidget {
           _pad(EventBand(banner, palForEvent(banner),
               onTap: () => openEvent(context, banner, palForEvent(banner)))),
         const SizedBox(height: 16),
+        if ((d.month == 2 && d.day <= 14) || (d.month == 12 && d.day >= 15) || (d.month == 1 && d.day <= 7)) ...[
+          const SizedBox(height: 12),
+          _pad(GestureDetector(
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => d.month == 2 ? const QuickMatch() : const YearSummary())),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(color: C.panel, borderRadius: BorderRadius.circular(18)),
+              child: Row(children: [
+                Text(d.month == 2 ? '♥' : '✦', style: const TextStyle(fontSize: 20, color: C.accent)),
+                const SizedBox(width: 12),
+                Expanded(child: Text(d.month == 2 ? 'Sevgililer Günü uyum testi' : '${d.month == 12 ? d.year : d.year - 1} yılının özeti hazır',
+                    style: T.heading.copyWith(fontSize: 13.6))),
+                const Icon(Icons.chevron_right_rounded),
+              ]),
+            ),
+          )),
+        ],
         _pad(const _ChartFolders()),
         const SizedBox(height: 23),
         _pad(const _NeverCard()),

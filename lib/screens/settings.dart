@@ -5,6 +5,8 @@ import '../theme.dart';
 import '../widgets/common.dart';
 import '../widgets/surface.dart';
 import 'premium.dart';
+import 'legal.dart';
+import '../services/notifications.dart';
 import 'profile.dart' show editProfile;
 
 class SettingsScreen extends StatelessWidget {
@@ -44,8 +46,18 @@ class SettingsScreen extends StatelessWidget {
                   () => openPremium(context)),
               row('Kullanıcı adı', app.username == null ? 'Oluşturulmadı' : '@${app.username}',
                   () => createUsername(context)),
-              row('Gizlilik', 'Verilerin nerede saklanıyor?', () => showInfo(context, 'Gizlilik',
-                  'Doğum bilgilerin, arkadaşların, sohbet geçmişin ve rozetlerin yalnızca bu cihazda saklanır. Bu sürümde hiçbir kişisel veri sunucuya gönderilmez. Rehber yalnızca seçim yaparken cihazda okunur, kaydedilmez.')),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                value: app.notificationsOn,
+                onChanged: (v) {
+                  app.setNotifications(v);
+                  Notifications.reschedule();
+                },
+                title: Text('Bildirimler', style: T.heading),
+                subtitle: Text('Her sabah 09:00 günlük skor, önemli gökyüzü olaylarından bir gün önce uyarı',
+                    style: T.body.copyWith(fontSize: 12)),
+              ),
+              row('Aydınlatma Metni ve Gizlilik', 'KVKK kapsamındaki bilgilendirme', () => openLegal(context)),
               row('Hakkında', 'EmuAstro 1.0', () => showInfo(context, 'EmuAstro',
                   'Gezegen konumları cihazda hesaplanır (Schlyter yöntemi, ~1–2 yay dakikası doğruluk). Ev sistemi: eşit ev. Yorumlar eğlence ve öz farkındalık amaçlıdır.')),
               const SizedBox(height: 12),

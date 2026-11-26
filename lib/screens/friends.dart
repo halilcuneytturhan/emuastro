@@ -10,6 +10,7 @@ import '../widgets/common.dart';
 import '../widgets/dots.dart';
 import '../widgets/surface.dart';
 import 'premium.dart';
+import 'tools.dart' show synastrySections;
 import '../services/backend.dart';
 
 String fmtDate(DateTime d) =>
@@ -258,6 +259,20 @@ class FriendReport extends StatelessWidget {
               ]),
             ),
             const SizedBox(height: 22),
+            for (final (i, (h, b)) in synastrySections(app.chart, other).indexed) ...[
+              if (i == 0 || !premiumNeeded) ...[
+                Text(h, style: T.heading),
+                const SizedBox(height: 4),
+                Text(b, style: T.body.copyWith(color: C.ink, fontSize: 13.5)),
+                const SizedBox(height: 14),
+              ],
+            ],
+            if (premiumNeeded)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: Text('İletişim, duygusal bağ ve uzun vade bölümleri Premium’da.',
+                    style: T.body.copyWith(color: C.accent, fontWeight: FontWeight.w700)),
+              ),
             const Text('Haritalarınız arası açılar', style: T.heading),
             const SizedBox(height: 10),
             if (notes.isEmpty)

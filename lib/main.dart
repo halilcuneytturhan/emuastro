@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'data/sample.dart';
 import 'screens/chat.dart';
 import 'screens/home.dart';
+import 'screens/onboarding.dart';
+import 'services/notifications.dart';
 import 'screens/premium.dart';
 import 'services/backend.dart';
 import 'screens/profile.dart';
@@ -24,6 +26,8 @@ Future<void> main() async {
   }
   await app.load(overrideToday: fixedDay);
   await Backend.init();
+  await Notifications.init();
+  if (app.onboarded) Notifications.reschedule();
   Purchases.init();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   runApp(const EmuAstroApp());
@@ -53,8 +57,29 @@ class EmuAstroApp extends StatelessWidget {
                 viewPadding: const EdgeInsets.only(top: 54, bottom: 34)),
             child: child!);
       },
-      home: const Shell(),
+      home: const _Root(),
     );
+  }
+}
+
+class _Root extends StatefulWidget {
+  const _Root();
+  @override
+  State<_Root> createState() => _RootState();
+}
+
+class _RootState extends State<_Root> {
+  @override
+  Widget build(BuildContext context) {
+    // Web karşılaştırma görüntülerinde (?date=) tanıtım atlanır.
+    final skip = kIsWeb && Uri.base.queryParameters.containsKey('date');
+    if (!app.onboarded && !skip) {
+      return OnboardingScreen(onDone: () {
+        Notifications.reschedule();
+        setState(() {});
+      });
+    }
+    return const Shell();
   }
 }
 

@@ -31,9 +31,19 @@ void main() {
     expect(a.ask('Yine?'), isNotNull);
   });
 
+  testWidgets('ilk açılış ekranı gösterilir', (t) async {
+    t.view.physicalSize = const Size(430 * 3, 932 * 3);
+    t.view.devicePixelRatio = 3;
+    app.onboarded = false;
+    await t.pumpWidget(const EmuAstroApp());
+    await t.pump(const Duration(milliseconds: 300));
+    expect(find.text('Gökyüzü sana ne söylüyor?'), findsOneWidget);
+  });
+
   testWidgets('dört sekme açılır', (t) async {
     t.view.physicalSize = const Size(430 * 3, 932 * 3);
     t.view.devicePixelRatio = 3;
+    app.onboarded = true;
     await t.pumpWidget(const EmuAstroApp());
     await t.pump(const Duration(milliseconds: 500));
     expect(find.text('Kişisel Haritan'), findsWidgets);
@@ -48,3 +58,4 @@ void main() {
     expect(find.text('Transit', skipOffstage: false), findsWidgets);
   });
 }
+
