@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../data/sample.dart';
 import '../theme.dart';
 import 'sprites.dart';
@@ -75,7 +77,7 @@ class _BadgeRing extends CustomPainter {
     final c = s.center(Offset.zero);
     final R = s.width / 2;
     // dış çember boyunca "ROZET KAZAN · ROZET KAZAN ·"
-    const text = 'EMU ROZETİ · EMU ROZETİ · ';
+    final text = tr('EMU ROZETİ · EMU ROZETİ · ');
     final chars = text.split('');
     final style = TextStyle(
         fontFamily: 'Figtree',

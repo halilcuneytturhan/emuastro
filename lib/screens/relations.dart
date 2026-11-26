@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../data/sample.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -29,14 +31,14 @@ class _RelationsScreenState extends State<RelationsScreen> {
     final code = await app.createGiftCodeAsync();
     if (!mounted) return;
     if (code == null) {
-      showInfo(context, 'Hediye hakkın kalmadı', 'En fazla 3 arkadaşına hediye gönderebilirsin.');
+      showInfo(context, tr('Hediye hakkın kalmadı'), tr('En fazla 3 arkadaşına hediye gönderebilirsin.'));
       return;
     }
     try {
       await SharePlus.instance.share(ShareParams(
-          text: 'Sana 3 günlük EmuAstro Premium hediye ediyorum! Uygulamada İlişkiler > “Sana hediye mi geldi? Kodu gir” bölümüne şu kodu yaz: $code'));
+          text: l('Sana 3 günlük EmuAstro Premium hediye ediyorum! Uygulamada İlişkiler > “Hediye kodun mu var? Gir” bölümüne şu kodu yaz: $code', 'I’m gifting you 3 days of EmuAstro Premium! In the app go to Relationships > “Have a gift code? Enter it” and type: $code')));
     } catch (_) {
-      if (mounted) showInfo(context, 'Hediye kodun', '$code\nKodu arkadaşınla paylaş; 3 gün Premium açılır.');
+      if (mounted) showInfo(context, tr('Hediye kodun'), l('$code\nKodu arkadaşınla paylaş; 3 gün Premium açılır.', '$code\nShare the code with your friend; it unlocks 3 days of Premium.'));
     }
   }
 
@@ -46,22 +48,22 @@ class _RelationsScreenState extends State<RelationsScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
               backgroundColor: C.page,
-              title: Text('Hediye kodu', style: T.monoTitleBold),
+              title: Text(tr('Hediye kodu'), style: T.monoTitleBold),
               content: TextField(
                   controller: c,
                   autofocus: true,
                   textCapitalization: TextCapitalization.characters,
                   decoration: const InputDecoration(hintText: 'EMU-XXXXXX-X')),
               actions: [
-                TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Vazgeç')),
-                TextButton(onPressed: () => Navigator.pop(ctx, c.text), child: const Text('Kullan')),
+                TextButton(onPressed: () => Navigator.pop(ctx), child: Text(tr('Vazgeç'))),
+                TextButton(onPressed: () => Navigator.pop(ctx, c.text), child: Text(tr('Kullan'))),
               ],
             ));
     if (code == null || !mounted) return;
     final err = await app.redeemCodeAsync(code);
     if (!mounted) return;
-    showInfo(context, err == null ? 'Premium açıldı' : 'Kod kullanılamadı',
-        err ?? '3 gün boyunca tüm Premium özellikler açık. İyi keşifler!');
+    showInfo(context, err == null ? tr('Premium açıldı') : tr('Kod kullanılamadı'),
+        err ?? tr('3 gün boyunca tüm Premium özellikler açık. İyi keşifler!'));
   }
 
   Future<void> _addPhone() async {
@@ -70,23 +72,23 @@ class _RelationsScreenState extends State<RelationsScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
               backgroundColor: C.page,
-              title: Text('Numaranı ekle', style: T.monoTitleBold),
+              title: Text(tr('Numaranı ekle'), style: T.monoTitleBold),
               content: Column(mainAxisSize: MainAxisSize.min, children: [
                 TextField(
                     controller: c,
                     keyboardType: TextInputType.phone,
                     decoration: const InputDecoration(hintText: '+90 5xx xxx xx xx')),
                 const SizedBox(height: 10),
-                Text('Numaran yalnızca bu cihazda saklanır.', style: T.body.copyWith(fontSize: 11.5)),
+                Text(tr('Numaran yalnızca bu cihazda saklanır.'), style: T.body.copyWith(fontSize: 11.5)),
               ]),
               actions: [
-                TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Vazgeç')),
-                TextButton(onPressed: () => Navigator.pop(ctx, c.text.trim()), child: const Text('Kaydet')),
+                TextButton(onPressed: () => Navigator.pop(ctx), child: Text(tr('Vazgeç'))),
+                TextButton(onPressed: () => Navigator.pop(ctx, c.text.trim()), child: Text(tr('Kaydet'))),
               ],
             ));
     if (v == null) return;
     if (!RegExp(r'^\+?[0-9 ]{10,16}$').hasMatch(v)) {
-      if (mounted) showInfo(context, 'Numara geçersiz', 'Lütfen ülke koduyla birlikte gir.');
+      if (mounted) showInfo(context, tr('Numara geçersiz'), tr('Lütfen ülke koduyla birlikte gir.'));
       return;
     }
     app.setPhone(v);
@@ -120,14 +122,14 @@ class _RelationsScreenState extends State<RelationsScreen> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(label, style: T.sectionLabel),
               const SizedBox(height: 9),
-              Text('İlişkiler', style: T.display),
+              Text(tr('İlişkiler'), style: T.display),
               const SizedBox(height: 3),
               GestureDetector(
                 onTap: () => createUsername(context),
                 child: Row(children: [
                   const Sprite('at', size: 17, cells: 14),
                   const SizedBox(width: 7),
-                  Text(app.username == null ? 'Kullanıcı adı oluştur' : '@${app.username}',
+                  Text(app.username == null ? tr('Kullanıcı adı oluştur') : '@${app.username}',
                       style: T.heading.copyWith(
                           color: C.accent, fontWeight: FontWeight.w700, fontSize: 13.4)),
                 ]),
@@ -158,9 +160,9 @@ class _RelationsScreenState extends State<RelationsScreen> {
       ];
 
   List<Widget> _friends(BuildContext context) => [
-        ..._header('ARKADAŞLAR · İLİŞKİLER'),
+        ..._header(tr('ARKADAŞLAR · İLİŞKİLER')),
         const SizedBox(height: 19),
-        _p(Text('Rehberindekiler', style: T.heading)),
+        _p(Text(tr('Rehberindekiler'), style: T.heading)),
         const SizedBox(height: 10),
         _p(Container(
           padding: const EdgeInsets.fromLTRB(17, 22, 17, 18),
@@ -172,13 +174,13 @@ class _RelationsScreenState extends State<RelationsScreen> {
               const Sprite('book', size: 34, cells: 22),
               const SizedBox(width: 16),
               Expanded(
-                child: Text('Rehberinden arkadaş ekle',
+                child: Text(tr('Rehberinden arkadaş ekle'),
                     style: T.heading.copyWith(fontSize: 14.2)),
               ),
             ]),
             const SizedBox(height: 16),
             Text(
-                'Rehberin yalnızca bu cihazda okunur; seçtiğin kişiyi doğum bilgisiyle eklersin. Hiçbir numara sunucuya gönderilmez, rehberin kaydedilmez.',
+                tr('Rehberin yalnızca bu cihazda okunur; seçtiğin kişiyi doğum bilgisiyle eklersin. Hiçbir numara sunucuya gönderilmez, rehberin kaydedilmez.'),
                 style: T.body.copyWith(fontSize: 12.8, height: 1.3)),
             const SizedBox(height: 14),
             GestureDetector(
@@ -189,8 +191,8 @@ class _RelationsScreenState extends State<RelationsScreen> {
                 decoration: BoxDecoration(
                     color: const Color(0xFF7146F4),
                     borderRadius: BorderRadius.circular(21)),
-                child: const Center(
-                  child: Text('Rehberi aç',
+                child: Center(
+                  child: Text(tr('Rehberi aç'),
                       style: TextStyle(
                           fontFamily: 'Figtree',
                           fontWeight: FontWeight.w800,
@@ -217,10 +219,10 @@ class _RelationsScreenState extends State<RelationsScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(app.phone == null ? 'Numaranı ekle' : app.phone!,
+                      Text(app.phone == null ? tr('Numaranı ekle') : app.phone!,
                           style: T.heading.copyWith(fontSize: 13.6, fontWeight: FontWeight.w800)),
                       const SizedBox(height: 2),
-                      Text(app.phone == null ? 'Hediye ve davetlerde seni tanısınlar.' : 'Numaran cihazında kayıtlı · değiştirmek için dokun',
+                      Text(app.phone == null ? tr('Hediye ve davetlerde seni tanısınlar.') : tr('Numaran cihazında kayıtlı · değiştirmek için dokun'),
                           style: T.body.copyWith(fontSize: 9.2, height: 1.2)),
                     ]),
               ),
@@ -230,7 +232,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
           ),
         )),
         const SizedBox(height: 25),
-        _p(Text('Çevren', style: T.heading)),
+        _p(Text(tr('Çevren'), style: T.heading)),
         const SizedBox(height: 10),
         _p(SizedBox(
           height: 82,
@@ -240,7 +242,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
               child: Column(children: [
                 DottedCircle(size: 64, child: DotPlus(size: 18)),
                 SizedBox(height: 4),
-                Text('Ekle',
+                Text(tr('Ekle'),
                     style: TextStyle(
                         fontFamily: 'Figtree',
                         fontWeight: FontWeight.w700,
@@ -285,7 +287,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
           const SizedBox(width: 14),
           Expanded(
             child: Text(
-                'Arkadaşlarını ekle; doğum haritalarınızı karşılaştır, istersen ilişki raporu aç.',
+                tr('Arkadaşlarını ekle; doğum haritalarınızı karşılaştır, istersen ilişki raporu aç.'),
                 style: T.body.copyWith(fontSize: 12.8, height: 1.27)),
           ),
         ])),
@@ -293,11 +295,11 @@ class _RelationsScreenState extends State<RelationsScreen> {
         const Center(child: _Doodles(width: 262)),
         const SizedBox(height: 30),
         Center(
-            child: Text('Bir arkadaşına Premium hediye et',
+            child: Text(tr('Bir arkadaşına Premium hediye et'),
                 style: T.heading.copyWith(fontSize: 16.2, fontWeight: FontWeight.w800))),
         const SizedBox(height: 7),
         _p(Text(
-            'Arkadaşın 3 gün boyunca EmuAstro Premium\'u ücretsiz denesin.\nEn fazla 3 arkadaşına hediye gönderebilirsin.',
+            tr('Arkadaşın 3 gün boyunca EmuAstro Premium\'u ücretsiz denesin.\nEn fazla 3 arkadaşına hediye gönderebilirsin.'),
             textAlign: TextAlign.center,
             style: T.body.copyWith(fontSize: 12.4, height: 1.3))),
         const SizedBox(height: 14),
@@ -309,8 +311,8 @@ class _RelationsScreenState extends State<RelationsScreen> {
               height: 50,
               decoration: BoxDecoration(
                   color: C.button, borderRadius: BorderRadius.circular(25)),
-              child: const Center(
-                  child: Text('Hediyeyi paylaş',
+              child: Center(
+                  child: Text(tr('Hediyeyi paylaş'),
                       style: TextStyle(
                           fontFamily: 'Figtree',
                           fontWeight: FontWeight.w800,
@@ -321,14 +323,14 @@ class _RelationsScreenState extends State<RelationsScreen> {
         ),
         const SizedBox(height: 18),
         Center(
-            child: Text('${app.giftsLeft} hediye hakkın kaldı',
+            child: Text(l('${app.giftsLeft} hediye hakkın kaldı', '${app.giftsLeft} gifts left'),
                 style: T.body.copyWith(
                     fontSize: 9.2, fontWeight: FontWeight.w600, color: C.grey))),
         const SizedBox(height: 15),
         Center(
           child: GestureDetector(
             onTap: _redeem,
-            child: Text('Hediye kodun mu var? Gir',
+            child: Text(tr('Hediye kodun mu var? Gir'),
                 style: T.body.copyWith(
                     fontSize: 10.4,
                     fontWeight: FontWeight.w700,
@@ -338,7 +340,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
       ];
 
   List<Widget> _soulmate(BuildContext context) => [
-        ..._header('RUH EŞİ · İLİŞKİLER'),
+        ..._header(tr('RUH EŞİ · İLİŞKİLER')),
         const SizedBox(height: 24),
         for (final f in app.friends.where((f) => f.partner))
           _p(GestureDetector(
@@ -359,12 +361,12 @@ class _RelationsScreenState extends State<RelationsScreen> {
         const SizedBox(height: 16),
         const Center(child: _Doodles(width: 220)),
         const SizedBox(height: 26),
-        _p(Text('Ruh eşi raporu',
+        _p(Text(tr('Ruh eşi raporu'),
             textAlign: TextAlign.center,
             style: T.monoTitleBold)),
         const SizedBox(height: 10),
         _p(Text(
-            'Partnerinin doğum bilgilerini ekle; Venüs, Mars ve Ay açılarına göre uyum haritanı çıkaralım.',
+            tr('Partnerinin doğum bilgilerini ekle; Venüs, Mars ve Ay açılarına göre uyum haritanı çıkaralım.'),
             textAlign: TextAlign.center,
             style: T.body.copyWith(fontSize: 12.8))),
         const SizedBox(height: 20),
@@ -376,8 +378,8 @@ class _RelationsScreenState extends State<RelationsScreen> {
               height: 50,
               decoration: BoxDecoration(
                   color: C.button, borderRadius: BorderRadius.circular(25)),
-              child: const Center(
-                  child: Text('Partner ekle',
+              child: Center(
+                  child: Text(tr('Partner ekle'),
                       style: TextStyle(
                           fontFamily: 'Figtree',
                           fontWeight: FontWeight.w800,
@@ -395,7 +397,7 @@ class _Segment extends StatelessWidget {
   const _Segment(this.index, this.onTap);
   @override
   Widget build(BuildContext context) {
-    const labels = ['Arkadaşlar', 'Ruh Eşi'];
+    final labels = [tr('Arkadaşlar'), tr('Ruh Eşi')];
     return Container(
       width: 192.5,
       height: 50.5,

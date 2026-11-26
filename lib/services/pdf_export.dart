@@ -9,6 +9,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../astro/interpret.dart';
 import '../data/sample.dart';
+import '../l10n.dart';
 
 /// Tüm başlıkları tek PDF'te toplar ve paylaşım menüsünü açar.
 Future<String?> exportPdf() async {
@@ -37,7 +38,7 @@ Future<String?> exportPdf() async {
       h('Gezegen konumları'),
       for (final pl in c.planets)
         p('${planetName[pl.id]}: ${signs[pl.sign]} ${pl.degInSign.toStringAsFixed(1)}°${pl.retro ? ' (R)' : ''} · ${c.house(pl.lon)}. ev'),
-      h('Bugün (${dateLine(app.today)})'),
+      h('${tr('Bugün')} (${app.today.day}.${app.today.month}.${app.today.year})'),
       p('Fırsat ve akış %${d.scores[0]} · Zihin ve odak %${d.scores[1]} · Enerji %${d.scores[2]}'),
       p('Bugün yap: ${d.todo}'),
       p('Bugün uzak dur: ${d.never}'),

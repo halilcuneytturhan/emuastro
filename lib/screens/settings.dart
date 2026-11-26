@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../data/sample.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -38,13 +40,13 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(height: 10),
               Text('AYARLAR', style: T.sectionLabel),
               const SizedBox(height: 6),
-              Text('Ayarlar', style: T.display),
+              Text(tr('Ayarlar'), style: T.display),
               const SizedBox(height: 20),
-              row('Profil ve doğum bilgileri',
+              row(tr('Profil ve doğum bilgileri'),
                   '${app.profile.name} · ${app.profile.place}', () => editProfile(context)),
-              row('Premium', app.premium ? 'Etkin' : 'Ücretsiz plan',
+              row('Premium', app.premium ? tr('Etkin') : tr('Ücretsiz plan'),
                   () => openPremium(context)),
-              row('Kullanıcı adı', app.username == null ? 'Oluşturulmadı' : '@${app.username}',
+              row(tr('Kullanıcı adı'), app.username == null ? tr('Oluşturulmadı') : '@${app.username}',
                   () => createUsername(context)),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
@@ -53,43 +55,59 @@ class SettingsScreen extends StatelessWidget {
                   app.setNotifications(v);
                   Notifications.reschedule();
                 },
-                title: Text('Bildirimler', style: T.heading),
-                subtitle: Text('Her sabah 09:00 günlük skor, önemli gökyüzü olaylarından bir gün önce uyarı',
+                title: Text(tr('Bildirimler'), style: T.heading),
+                subtitle: Text(tr('Her sabah 09:00 günlük skor, önemli gökyüzü olaylarından bir gün önce uyarı'),
                     style: T.body.copyWith(fontSize: 12)),
               ),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Görünüm', style: T.heading),
+                title: Text(tr('Dil'), style: T.heading),
                 subtitle: Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: SegmentedButton<String>(
-                    segments: const [
-                      ButtonSegment(value: 'system', label: Text('Sistem')),
-                      ButtonSegment(value: 'light', label: Text('Açık')),
-                      ButtonSegment(value: 'dark', label: Text('Karanlık')),
+                    segments: [
+                      ButtonSegment(value: 'system', label: Text(tr('Sistem'))),
+                      const ButtonSegment(value: 'tr', label: Text('Türkçe')),
+                      const ButtonSegment(value: 'en', label: Text('English')),
+                    ],
+                    selected: {app.lang},
+                    onSelectionChanged: (v) => app.setLang(v.first),
+                  ),
+                ),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(tr('Görünüm'), style: T.heading),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: SegmentedButton<String>(
+                    segments: [
+                      ButtonSegment(value: 'system', label: Text(tr('Sistem'))),
+                      ButtonSegment(value: 'light', label: Text(tr('Açık'))),
+                      ButtonSegment(value: 'dark', label: Text(tr('Karanlık'))),
                     ],
                     selected: {app.themeMode},
                     onSelectionChanged: (v) => app.setThemeMode(v.first),
                   ),
                 ),
               ),
-              row('Aydınlatma Metni ve Gizlilik', 'KVKK kapsamındaki bilgilendirme', () => openLegal(context)),
-              row('Hakkında', 'EmuAstro 1.0 · logo ve marka EmuAstro’ya aittir', () => showInfo(context, 'EmuAstro',
-                  'Gezegen konumları cihazda hesaplanır (Schlyter yöntemi, ~1–2 yay dakikası doğruluk). Ev sistemi: eşit ev. Yorumlar eğlence ve öz farkındalık amaçlıdır.')),
+              row(tr('Aydınlatma Metni ve Gizlilik'), tr('KVKK kapsamındaki bilgilendirme'), () => openLegal(context)),
+              row(tr('Hakkında'), tr('EmuAstro 1.0 · logo ve marka EmuAstro’ya aittir'), () => showInfo(context, 'EmuAstro',
+                  tr('Gezegen konumları cihazda hesaplanır (Schlyter yöntemi, ~1–2 yay dakikası doğruluk). Ev sistemi: eşit ev. Yorumlar eğlence ve öz farkındalık amaçlıdır.'))),
               const SizedBox(height: 12),
-              row('Tüm verileri sil', 'Profil, arkadaşlar, sohbet ve rozetler silinir', () async {
+              row(tr('Tüm verileri sil'), tr('Profil, arkadaşlar, sohbet ve rozetler silinir'), () async {
                 final ok = await showDialog<bool>(
                     context: context,
                     builder: (c) => AlertDialog(
-                          title: const Text('Tüm veriler silinsin mi?'),
-                          content: const Text('Bu işlem geri alınamaz.'),
+                          title: Text(tr('Tüm veriler silinsin mi?')),
+                          content: Text(tr('Bu işlem geri alınamaz.')),
                           actions: [
                             TextButton(
                                 onPressed: () => Navigator.pop(c, false),
-                                child: const Text('Vazgeç')),
+                                child: Text(tr('Vazgeç'))),
                             TextButton(
                                 onPressed: () => Navigator.pop(c, true),
-                                child: const Text('Sil',
+                                child: Text(tr('Sil'),
                                     style: TextStyle(color: Colors.red))),
                           ],
                         ));
@@ -111,7 +129,7 @@ Future<void> createUsername(BuildContext context) async {
       builder: (ctx) => StatefulBuilder(
             builder: (ctx, setS) => AlertDialog(
               backgroundColor: C.page,
-              title: Text('Kullanıcı adı', style: T.monoTitleBold),
+              title: Text(tr('Kullanıcı adı'), style: T.monoTitleBold),
               content: TextField(
                 controller: c,
                 autofocus: true,
@@ -120,18 +138,18 @@ Future<void> createUsername(BuildContext context) async {
               actions: [
                 TextButton(
                     onPressed: () => Navigator.pop(ctx),
-                    child: const Text('Vazgeç')),
+                    child: Text(tr('Vazgeç'))),
                 TextButton(
                     onPressed: () {
                       final v = c.text.trim().toLowerCase();
                       if (!RegExp(r'^[a-z0-9_.]{3,20}$').hasMatch(v)) {
-                        setS(() => err = '3–20 karakter: harf, rakam, _ ve .');
+                        setS(() => err = tr('3–20 karakter: harf, rakam, _ ve .'));
                         return;
                       }
                       app.setUsername(v);
                       Navigator.pop(ctx);
                     },
-                    child: const Text('Kaydet')),
+                    child: Text(tr('Kaydet'))),
               ],
             ),
           ));

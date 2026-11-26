@@ -34,6 +34,7 @@ void main() {
   testWidgets('ilk açılış ekranı gösterilir', (t) async {
     t.view.physicalSize = const Size(430 * 3, 932 * 3);
     t.view.devicePixelRatio = 3;
+    app.lang = 'tr';
     app.onboarded = false;
     await t.pumpWidget(const EmuAstroApp());
     await t.pump(const Duration(milliseconds: 300));
@@ -43,6 +44,7 @@ void main() {
   testWidgets('dört sekme açılır', (t) async {
     t.view.physicalSize = const Size(430 * 3, 932 * 3);
     t.view.devicePixelRatio = 3;
+    app.lang = 'tr';
     app.onboarded = true;
     await t.pumpWidget(const EmuAstroApp());
     await t.pump(const Duration(milliseconds: 500));

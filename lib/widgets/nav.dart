@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+
+import '../l10n.dart';
 import 'package:flutter/services.dart';
 
 /// EmuFit ile aynı alt gezinme dili: ekranı neredeyse kenardan kenara
@@ -26,11 +28,11 @@ class EmuNavBar extends StatelessWidget {
     0, 0, 0, 1, 0,
   ];
 
-  static const items = <(NavGlyph, String)>[
-    (NavGlyph.home, 'Ana Sayfa'),
-    (NavGlyph.people, 'İlişkiler'),
-    (NavGlyph.chat, 'Sor'),
-    (NavGlyph.profile, 'Profil'),
+  static List<(NavGlyph, String)> get items => <(NavGlyph, String)>[
+    (NavGlyph.home, tr('Ana Sayfa')),
+    (NavGlyph.people, tr('İlişkiler')),
+    (NavGlyph.chat, tr('Sor')),
+    (NavGlyph.profile, tr('Profil')),
   ];
 
   @override

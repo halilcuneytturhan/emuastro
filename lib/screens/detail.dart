@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../data/sample.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -47,12 +49,12 @@ class _DetailScreenState extends State<DetailScreen> {
             children: [
               const Align(alignment: Alignment.centerLeft, child: _Back()),
               const SizedBox(height: 22),
-              Text('KİŞİSEL HARİTAN', style: T.sectionLabel),
+              Text(tr('KİŞİSEL HARİTAN'), style: T.sectionLabel),
               const SizedBox(height: 8),
-              Text('Tüm rapor', style: T.monoTitleBold),
+              Text(tr('Tüm rapor'), style: T.monoTitleBold),
               const SizedBox(height: 6),
               Text(
-                  'Güneş ${app.sun} · Ay ${app.moon} · Yükselen ${app.asc}',
+                  '${tr('Güneş')} ${app.sun} · ${tr('Ay')} ${app.moon} · ${tr('Yükselen')} ${app.asc}',
                   style: T.body),
               const SizedBox(height: 20),
               for (var i = 0; i < reportSections.length; i++) ...[
@@ -133,8 +135,8 @@ class EventDetail extends StatelessWidget {
                       ? null
                       : () {
                           app.earnBadge(event.key);
-                          showInfo(context, 'Rozet kazandın',
-                              '“${event.title}” rozeti Profil > Rozetlerim bölümüne eklendi.');
+                          showInfo(context, tr('Rozet kazandın'),
+                              l('“${event.title}” rozeti Profil > Koleksiyonum bölümüne eklendi.', 'The “${event.title}” badge was added to Profile > My collection.'));
                         },
                   child: Pearl(
                     pal: pal,
@@ -146,8 +148,8 @@ class EventDetail extends StatelessWidget {
                       Expanded(
                           child: Text(
                               earned
-                                  ? 'Bu dönemin rozeti koleksiyonunda.'
-                                  : 'Etkiyi okudum — rozeti koleksiyonuma ekle',
+                                  ? tr('Bu dönemin rozeti koleksiyonunda.')
+                                  : tr('Etkiyi okudum — rozeti koleksiyonuma ekle'),
                               style: const TextStyle(
                                   fontFamily: 'Figtree',
                                   fontSize: 13.5,

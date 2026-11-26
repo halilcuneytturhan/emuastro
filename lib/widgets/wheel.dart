@@ -2,24 +2,26 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../data/sample.dart';
 import 'sprites.dart';
 import 'common.dart' show showInfo;
 import '../astro/interpret.dart' show planetName, signs;
 
-const planetMeaning = {
-  'sun': 'Özün, kimliğin ve yaşam enerjin. Nerede parlamak istediğini gösterir.',
-  'moon': 'Duyguların, ihtiyaçların ve güvende hissetme biçimin.',
-  'mercury': 'Düşünme, konuşma ve öğrenme tarzın.',
-  'venus': 'Sevgi dilin, zevklerin ve değer verdiklerin.',
-  'mars': 'Enerjin, arzuların ve harekete geçme biçimin.',
-  'jupiter': 'Şansın, büyüme alanın ve inançların.',
-  'saturn': 'Sorumlulukların, sınırların ve olgunlaştığın alan.',
-  'uranus': 'Özgürlük isteğin ve ani değişimler.',
-  'neptune': 'Hayallerin, sezgilerin ve ilham kaynağın.',
-  'pluto': 'Dönüşüm gücün ve derin tutkuların.',
-  'node': 'Ruhsal yönün: bu hayatta büyümeye çağrıldığın yol.',
-  'lilith': 'Bastırılan arzular ve bağımsızlık ihtiyacı.',
+Map<String, String> get planetMeaning => {
+  'sun': tr('Özün, kimliğin ve yaşam enerjin. Nerede parlamak istediğini gösterir.'),
+  'moon': tr('Duyguların, ihtiyaçların ve güvende hissetme biçimin.'),
+  'mercury': tr('Düşünme, konuşma ve öğrenme tarzın.'),
+  'venus': tr('Sevgi dilin, zevklerin ve değer verdiklerin.'),
+  'mars': tr('Enerjin, arzuların ve harekete geçme biçimin.'),
+  'jupiter': tr('Şansın, büyüme alanın ve inançların.'),
+  'saturn': tr('Sorumlulukların, sınırların ve olgunlaştığın alan.'),
+  'uranus': tr('Özgürlük isteğin ve ani değişimler.'),
+  'neptune': tr('Hayallerin, sezgilerin ve ilham kaynağın.'),
+  'pluto': tr('Dönüşüm gücün ve derin tutkuların.'),
+  'node': tr('Ruhsal yönün: bu hayatta büyümeye çağrıldığın yol.'),
+  'lilith': tr('Bastırılan arzular ve bağımsızlık ihtiyacı.'),
 };
 
 const _signGlyph = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'];
@@ -99,7 +101,7 @@ class ChartWheel extends StatelessWidget {
           child: Builder(
             builder: (ctx) => GestureDetector(
               onTap: () => showInfo(ctx, planetName[p.id] ?? p.id,
-                  '${signs[(p.lon ~/ 30) % 12]} ${(p.lon % 30).toStringAsFixed(0)}°${p.retro ? ' · retro' : ''} · ${data.chart.house(p.lon)}. ev\n\n${planetMeaning[p.id] ?? ''}'),
+                  '${signs[(p.lon ~/ 30) % 12]} ${(p.lon % 30).toStringAsFixed(0)}°${p.retro ? ' · retro' : ''} · ${l('${data.chart.house(p.lon)}. ev', 'house ${data.chart.house(p.lon)}')}\n\n${planetMeaning[p.id] ?? ''}'),
               child: Sprite(_sprite[p.id]!, size: s, cells: small ? 10 : 15, shadow: false),
             ),
           )));

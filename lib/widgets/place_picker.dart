@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../astro/places.dart';
 import '../theme.dart';
 
@@ -55,9 +57,9 @@ class _PlaceSheetState extends State<_PlaceSheet> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
             child: Row(children: [
-              Text('Doğum yeri', style: T.monoTitleBold),
+              Text(tr('Doğum yeri'), style: T.monoTitleBold),
               const Spacer(),
-              Text('${places.length} şehir', style: T.body.copyWith(fontSize: 12)),
+              Text(l('${places.length} şehir', '${places.length} cities'), style: T.body.copyWith(fontSize: 12)),
             ]),
           ),
           Padding(
@@ -67,7 +69,7 @@ class _PlaceSheetState extends State<_PlaceSheet> {
               onChanged: (v) => setState(() => q = v),
               style: T.heading.copyWith(fontSize: 15),
               decoration: InputDecoration(
-                hintText: 'Şehir ara (ör. Konya, Berlin)',
+                hintText: tr('Şehir ara (ör. Konya, Berlin)'),
                 prefixIcon: const Icon(Icons.search_rounded),
                 filled: true,
                 fillColor: C.surface,
@@ -87,7 +89,7 @@ class _PlaceSheetState extends State<_PlaceSheet> {
                     child: Padding(
                       padding: const EdgeInsets.all(30),
                       child: Text(
-                          'Bu isimde şehir bulunamadı. Doğduğun yere en yakın büyük şehri seçebilirsin; Yükselen birkaç derece değişebilir.',
+                          tr('Bu isimde şehir bulunamadı. Doğduğun yere en yakın büyük şehri seçebilirsin; Yükselen birkaç derece değişebilir.'),
                           textAlign: TextAlign.center,
                           style: T.body),
                     ),

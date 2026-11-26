@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+
+import '../l10n.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 import '../data/sample.dart';
@@ -43,7 +45,7 @@ class Purchases {
 
   static Future<String?> buy() async {
     if (product == null) {
-      return 'Mağaza ürünü bulunamadı. Abonelik App Store Connect / Google Play Console’da “$premiumProductId” kimliğiyle tanımlandığında satın alma açılır.';
+      return l('Mağaza ürünü bulunamadı. Abonelik App Store Connect / Google Play Console’da “$premiumProductId” kimliğiyle tanımlandığında satın alma açılır.', 'Store product not found. Purchases open once the subscription is set up in App Store Connect / Google Play Console as “$premiumProductId”.');
     }
     await InAppPurchase.instance
         .buyNonConsumable(purchaseParam: PurchaseParam(productDetails: product!));
@@ -55,7 +57,7 @@ class Purchases {
       await InAppPurchase.instance.restorePurchases();
       return null;
     } catch (e) {
-      return 'Geri yükleme şu an yapılamadı.';
+      return tr('Geri yükleme şu an yapılamadı.');
     }
   }
 }
@@ -93,14 +95,14 @@ class PremiumScreen extends StatelessWidget {
                   const SizedBox(height: 14),
                   Text('EMUASTRO PREMIUM', style: T.bandKicker),
                   const SizedBox(height: 6),
-                  Text('Haritanın tamamını aç',
+                  Text(tr('Haritanın tamamını aç'),
                       style: T.monoCard.copyWith(fontSize: 19)),
                   const SizedBox(height: 16),
                   for (final f in [
-                    '15 bölümlük kişisel harita raporu',
-                    'Günde 5 soru',
-                    'Sınırsız ilişki ve ruh eşi raporu',
-                    'PDF olarak tüm rapor',
+                    tr('15 bölümlük kişisel harita raporu'),
+                    tr('Günde 5 soru'),
+                    tr('Sınırsız ilişki ve ruh eşi raporu'),
+                    tr('PDF olarak tüm rapor'),
                   ])
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
@@ -121,27 +123,27 @@ class PremiumScreen extends StatelessWidget {
               if (app.premium)
                 Text(
                     app.purchased
-                        ? 'Premium aboneliğin etkin.'
-                        : 'Premium deneme süren ${app.trialUntil!.day}.${app.trialUntil!.month}.${app.trialUntil!.year} tarihine kadar açık.',
+                        ? tr('Premium aboneliğin etkin.')
+                        : l('Premium deneme süren ${app.trialUntil!.day}.${app.trialUntil!.month}.${app.trialUntil!.year} tarihine kadar açık.', 'Your Premium trial is active until ${app.trialUntil!.day}/${app.trialUntil!.month}/${app.trialUntil!.year}.'),
                     textAlign: TextAlign.center,
                     style: T.heading)
               else ...[
                 _btn(
                     Purchases.product == null
-                        ? 'Abone ol'
+                        ? tr('Abone ol')
                         : 'Abone ol · ${Purchases.product!.price}/ay',
                     C.button, () async {
                   final e = await Purchases.buy();
                   if (e != null && context.mounted) {
-                    showInfo(context, 'Satın alma', e);
+                    showInfo(context, tr('Satın alma'), e);
                   }
                 }),
                 const SizedBox(height: 12),
                 if (!app.trialUsed)
-                  _btn('3 gün ücretsiz dene', const Color(0xFF7146F4), () {
+                  _btn(tr('3 gün ücretsiz dene'), const Color(0xFF7146F4), () {
                     app.startFreeTrial();
-                    showInfo(context, 'Deneme başladı',
-                        '3 gün boyunca tüm Premium özellikler açık.');
+                    showInfo(context, tr('Deneme başladı'),
+                        tr('3 gün boyunca tüm Premium özellikler açık.'));
                   }),
               ],
               const SizedBox(height: 14),
@@ -150,11 +152,11 @@ class PremiumScreen extends StatelessWidget {
                   onPressed: () async {
                     final e = await Purchases.restore();
                     if (context.mounted) {
-                      showInfo(context, 'Satın alımları geri yükle',
-                          e ?? 'Önceki satın alımın varsa birkaç saniye içinde etkinleşir.');
+                      showInfo(context, tr('Satın alımları geri yükle'),
+                          e ?? tr('Önceki satın alımın varsa birkaç saniye içinde etkinleşir.'));
                     }
                   },
-                  child: Text('Satın alımları geri yükle',
+                  child: Text(tr('Satın alımları geri yükle'),
                       style: TextStyle(
                           fontFamily: 'Figtree',
                           color: C.accent,
@@ -162,7 +164,7 @@ class PremiumScreen extends StatelessWidget {
                 ),
               ),
               Text(
-                  'Abonelik, iptal edilmediği sürece dönem sonunda yenilenir. Mağaza hesabının ayarlarından istediğin zaman iptal edebilirsin.',
+                  tr('Abonelik, iptal edilmediği sürece dönem sonunda yenilenir. Mağaza hesabının ayarlarından istediğin zaman iptal edebilirsin.'),
                   textAlign: TextAlign.center,
                   style: T.body.copyWith(fontSize: 10.5)),
             ],

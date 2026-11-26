@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../data/sample.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -39,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         controller: widget.controller,
         padding: EdgeInsets.only(top: top + 26, bottom: 150),
         children: [
-          _p(Text('PROFİL', style: T.sectionLabel)),
+          _p(Text(tr('PROFİL'), style: T.sectionLabel)),
           const SizedBox(height: 4),
           _p(Row(children: [
             Text(pr.name,
@@ -85,11 +87,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           Text('EMUASTRO PREMIUM', style: T.bandKicker),
                           const SizedBox(height: 4),
-                          Text('Haritanın tamamını aç',
+                          Text(tr('Haritanın tamamını aç'),
                               style: T.monoCard.copyWith(fontSize: 15.2)),
                           const SizedBox(height: 3),
-                          const Text(
-                              'Tüm rapor bölümleri, günde 5 soru,\nilişki raporları',
+                          Text(
+                              tr('Tüm rapor bölümleri, günde 5 soru,\nilişki raporları'),
                               style: TextStyle(
                                   fontFamily: 'Figtree',
                                   fontSize: 10.4,
@@ -150,9 +152,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 26),
           _p(Row(children: [
             for (final (k, v) in [
-              ('Güneş', app.sun),
-              ('Ay', app.moon),
-              ('Yükselen', app.asc)
+              (tr('Güneş'), app.sun),
+              (tr('Ay'), app.moon),
+              (tr('Yükselen'), app.asc)
             ])
               Expanded(
                 child: Column(children: [
@@ -166,11 +168,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 46),
           _p(Row(children: [
-            Text('Koleksiyonum', style: T.monoTitle),
+            Text(tr('Koleksiyonum'), style: T.monoTitle),
             const SizedBox(width: 15),
             GestureDetector(
-              onTap: () => showInfo(context, 'Rozetler',
-                  'Ana Sayfa’daki gökyüzü olaylarına dokun, etkisini oku ve rozeti koleksiyonuna ekle. Şu ana kadar ${app.badges.length} rozet kazandın.'),
+              onTap: () => showInfo(context, tr('Rozetler'),
+                  l('Ana Sayfa’daki gökyüzü olaylarına dokun, etkisini oku ve rozeti koleksiyonuna ekle. Şu ana kadar ${app.badges.length} rozet kazandın.', 'Tap a sky event on Home, read its effect and add the badge to your collection. Badges so far: ${app.badges.length}.')),
               child: Container(
                 width: 16,
                 height: 16,
@@ -225,9 +227,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 33),
           _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 39),
-          _p(Text('YILDIZ KARDEŞLERİN', style: T.sectionLabel)),
+          _p(Text(tr('YILDIZ KARDEŞLERİN'), style: T.sectionLabel)),
           const SizedBox(height: 10),
-          _p(Text('Gökyüzünü kimlerle paylaşıyorsun?', style: T.monoTitle)),
+          _p(Text(tr('Gökyüzünü kimlerle paylaşıyorsun?'), style: T.monoTitle)),
           const SizedBox(height: 28),
           SizedBox(
             height: 194,
@@ -247,19 +249,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 24),
           _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 37),
-          _p(Text('Günün sürprizi', style: T.monoTitle)),
+          _p(Text(tr('Günün sürprizi'), style: T.monoTitle)),
           const SizedBox(height: 62),
           const _GiftBox(),
           const SizedBox(height: 30),
           _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 23),
-          _p(Text('Araçlar', style: T.monoTitle)),
+          _p(Text(tr('Araçlar'), style: T.monoTitle)),
           const SizedBox(height: 16),
           for (final (pal, sp, k, t, sub, page) in [
-            (Pal.purpleBand, 'star', 'PREMIUM', 'Uygun gün bulucu', 'İş, buluşma, taşınma için en iyi günler', const GoodDayFinder() as Widget),
-            (Pal.amber, 'saturn', 'PREMIUM', 'Önümüzdeki 12 ay', 'Büyük gezegenlerin haritana etkisi', const YearForecast() as Widget),
-            (Pal.rose, 'venus', 'ÜCRETSİZ', 'Hızlı uyum testi', 'Doğum tarihiyle uyumunu gör, paylaş', const QuickMatch() as Widget),
-            (Pal.navy, 'moon', 'PAYLAŞ', 'Yılın özeti', 'Senin yılın tek kartta', const YearSummary() as Widget),
+            (Pal.purpleBand, 'star', 'PREMIUM', tr('Uygun gün bulucu'), tr('İş, buluşma, taşınma için en iyi günler'), const GoodDayFinder() as Widget),
+            (Pal.amber, 'saturn', 'PREMIUM', tr('Önümüzdeki 12 ay'), tr('Büyük gezegenlerin haritana etkisi'), const YearForecast() as Widget),
+            (Pal.rose, 'venus', tr('ÜCRETSİZ'), tr('Hızlı uyum testi'), tr('Doğum tarihiyle uyumunu gör, paylaş'), const QuickMatch() as Widget),
+            (Pal.navy, 'moon', tr('PAYLAŞ'), tr('Yılın özeti'), tr('Senin yılın tek kartta'), const YearSummary() as Widget),
           ]) ...[
             _p(_NavBand(
                 pal: pal,
@@ -279,9 +281,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _p(_NavBand(
             pal: Pal.plum,
             sprite: 'people',
-            kicker: 'İLİŞKİLER',
-            title: 'Arkadaşlar ve ilişkiler',
-            sub: 'Doğum haritalarınızı karşılaştır',
+            kicker: tr('İLİŞKİLER'),
+            title: tr('Arkadaşlar ve ilişkiler'),
+            sub: tr('Doğum haritalarınızı karşılaştır'),
             onTap: widget.openRelations,
           )),
           const SizedBox(height: 23),
@@ -289,8 +291,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             pal: Pal.charcoal,
             sprite: 'gear',
             kicker: 'AYARLAR',
-            title: 'Hesap ve gizlilik',
-            sub: 'Premium, kullanıcı adı, verilerini yönet',
+            title: tr('Hesap ve gizlilik'),
+            sub: tr('Premium, kullanıcı adı, verilerini yönet'),
             onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const SettingsScreen())),
           )),
@@ -310,7 +312,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Text('Doğum haritan', style: T.monoTitleBold),
+                  Text(tr('Doğum haritan'), style: T.monoTitleBold),
                   const SizedBox(height: 16),
                   ChartWheel(
                       size: MediaQuery.of(ctx).size.width - 64, data: app),
@@ -324,18 +326,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
 Future<void> editProfile(BuildContext context) async {
   final pr = app.profile;
   final r = await birthForm(context,
-      title: 'Profili düzenle',
+      title: tr('Profili düzenle'),
       name: pr.name,
       birth: pr.birth,
       time: pr.time,
       place: pr.place,
       note: app.canEditBirth
-          ? 'Yükselen ve evler bu bilgilerden hesaplanır. Doğum bilgisini ayda bir kez düzeltebilirsin.'
-          : 'Doğum bilgisini bu ay düzelttin; şimdilik yalnızca ismini değiştirebilirsin.');
+          ? tr('Yükselen ve evler bu bilgilerden hesaplanır. Doğum bilgisini ayda bir kez düzeltebilirsin.')
+          : tr('Doğum bilgisini bu ay düzelttin; şimdilik yalnızca ismini değiştirebilirsin.'));
   if (r == null) return;
   final (n, b, t, pl, _) = r;
   final err = app.updateProfile(n, b, t, pl);
-  if (err != null && context.mounted) showInfo(context, 'Değiştirilemedi', err);
+  if (err != null && context.mounted) showInfo(context, tr('Değiştirilemedi'), err);
 }
 
 String _fmt(DateTime d) =>
@@ -440,7 +442,7 @@ class _GiftBoxState extends State<_GiftBox> with SingleTickerProviderStateMixin 
           app.openBox();
           Future.delayed(const Duration(milliseconds: 700), () {
             if (mounted) {
-              showInfo(context, 'Bugünün önerileri',
+              showInfo(context, tr('Bugünün önerileri'),
                   app.boxTips.map((t) => '• $t').join('\n\n'));
             }
           });
@@ -532,10 +534,10 @@ class _GiftBoxState extends State<_GiftBox> with SingleTickerProviderStateMixin 
           ),
         ),
         const SizedBox(height: 14),
-        Text(open ? 'Bugünün önerisi' : 'Bugünün mesajı kutuda',
+        Text(open ? tr('Bugünün önerisi') : tr('Bugünün mesajı kutuda'),
             style: T.monoCard.copyWith(color: C.ink, fontSize: 14.4)),
         const SizedBox(height: 7),
-        Text(open ? 'Kapatmak için dokun' : 'Açmak için dokun',
+        Text(open ? tr('Kapatmak için dokun') : tr('Açmak için dokun'),
             style: T.body.copyWith(fontSize: 12.4)),
       ]),
     );
@@ -651,7 +653,7 @@ class _BirthCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(22, 18, 22, 22),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Text('Doğum kaydım', style: T.monoCard.copyWith(fontSize: 14.6)),
+          Text(tr('Doğum kaydım'), style: T.monoCard.copyWith(fontSize: 14.6)),
           const Spacer(),
           GestureDetector(
             onTap: onEdit,
@@ -674,7 +676,7 @@ class _BirthCard extends StatelessWidget {
         ]),
         const SizedBox(height: 22),
         Text(
-            'Yükselen ve evler bu bilgilerden hesaplanır. Yanlışsa ayda bir kez düzeltebilirsin.',
+            tr('Yükselen ve evler bu bilgilerden hesaplanır. Yanlışsa ayda bir kez düzeltebilirsin.'),
             style: TextStyle(
                 fontFamily: 'Figtree',
                 fontSize: 9.4,

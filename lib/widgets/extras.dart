@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../astro/ephemeris.dart';
 import '../astro/interpret.dart' as astro;
 import '../data/sample.dart';
@@ -32,15 +34,15 @@ import 'surface.dart';
   return (illum, waxing, name);
 }
 
-const _phaseTip = {
-  'Yeniay': 'Niyet koymak ve yeni bir şeye başlamak için en uygun gün.',
-  'Hilal (büyüyen)': 'Küçük ama kararlı adımlar at; planın filizleniyor.',
-  'İlk dördün': 'Engellerle yüzleş; karar verme zamanı.',
-  'Şişkin Ay (büyüyen)': 'İnce ayar yap, eksikleri tamamla.',
-  'Dolunay': 'Duygular yüksek; sonuçları gör, bırakman gerekeni bırak.',
-  'Şişkin Ay (küçülen)': 'Öğrendiklerini paylaş, teşekkür et.',
-  'Son dördün': 'Toparlan, gereksizleri ayıkla.',
-  'Hilal (küçülen)': 'Dinlen, içe dön, yeni döngüye hazırlan.',
+Map<String, String> get _phaseTip => {
+  'Yeniay': tr('Niyet koymak ve yeni bir şeye başlamak için en uygun gün.'),
+  'Hilal (büyüyen)': tr('Küçük ama kararlı adımlar at; planın filizleniyor.'),
+  'İlk dördün': tr('Engellerle yüzleş; karar verme zamanı.'),
+  'Şişkin Ay (büyüyen)': tr('İnce ayar yap, eksikleri tamamla.'),
+  'Dolunay': tr('Duygular yüksek; sonuçları gör, bırakman gerekeni bırak.'),
+  'Şişkin Ay (küçülen)': tr('Öğrendiklerini paylaş, teşekkür et.'),
+  'Son dördün': tr('Toparlan, gereksizleri ayıkla.'),
+  'Hilal (küçülen)': tr('Dinlen, içe dön, yeni döngüye hazırlan.'),
 };
 
 class MoonCard extends StatelessWidget {
@@ -61,13 +63,13 @@ class MoonCard extends StatelessWidget {
         const SizedBox(width: 18),
         Expanded(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('BUGÜN AY · %${(illum * 100).round()}',
+            Text(l('BUGÜN AY · %${(illum * 100).round()}', 'MOON TODAY · ${(illum * 100).round()}%'),
                 style: T.bandKicker.copyWith(color: Colors.white60)),
             const SizedBox(height: 4),
-            Text('$name · ${astro.signs[moon.sign]}',
+            Text('${tr(name)} · ${astro.signs[moon.sign]}',
                 style: T.monoCard.copyWith(fontSize: 14.6)),
             const SizedBox(height: 5),
-            Text(_phaseTip[name]!,
+            Text(_phaseTip[name] ?? '',
                 style: TextStyle(
                     fontFamily: 'Figtree',
                     fontSize: 11.6,
@@ -123,7 +125,6 @@ class _MoonPainter extends CustomPainter {
 /// Önümüzdeki 7 günün fırsat skorları; en iyi gün vurgulu.
 class WeekStrip extends StatelessWidget {
   const WeekStrip({super.key});
-  static const _g = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
   @override
   Widget build(BuildContext context) {
     final days = [
@@ -133,9 +134,9 @@ class WeekStrip extends StatelessWidget {
     final best = scores.indexOf(scores.reduce(math.max));
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
-        Text('Bu hafta', style: T.heading),
+        Text(tr('Bu hafta'), style: T.heading),
         const Spacer(),
-        Text('En iyi gün: ${_g[days[best].weekday - 1]} · %${scores[best]}',
+        Text(l('En iyi gün: ${dayShort(days[best].weekday)} · %${scores[best]}', 'Best day: ${dayShort(days[best].weekday)} · ${scores[best]}%'),
             style: T.body.copyWith(fontSize: 11.5, color: C.accent, fontWeight: FontWeight.w700)),
       ]),
       const SizedBox(height: 12),
@@ -163,7 +164,7 @@ class WeekStrip extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 6),
-              Text(k == 0 ? 'Bugün' : _g[days[k].weekday - 1],
+              Text(k == 0 ? tr('Bugün') : dayShort(days[k].weekday),
                   style: T.body.copyWith(
                       fontSize: 10,
                       color: k == best ? C.ink : C.grey,

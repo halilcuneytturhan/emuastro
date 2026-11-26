@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../data/sample.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -16,11 +18,11 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final input = TextEditingController();
-  static const suggestions = [
-    'Bugün nelere dikkat etmeliyim?',
-    'Bu hafta iş görüşmesi için hangi gün uygun?',
-    'Aşk hayatım için haritam ne diyor?',
-    'Enerjimi nasıl yükseltirim?',
+  static List<String> get suggestions => [
+    tr('Bugün nelere dikkat etmeliyim?'),
+    tr('Bu hafta iş görüşmesi için hangi gün uygun?'),
+    tr('Aşk hayatım için haritam ne diyor?'),
+    tr('Enerjimi nasıl yükseltirim?'),
   ];
 
   Future<void> _send(String q) async {
@@ -28,7 +30,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final err = await app.askAsync(q.trim());
     if (!mounted) return;
     if (err != null) {
-      showInfo(context, 'Soru hakkın doldu', err);
+      showInfo(context, tr('Soru hakkın doldu'), err);
       if (!app.premium) {
         Future.delayed(const Duration(milliseconds: 400), () {
           if (mounted) openPremium(context);
@@ -58,12 +60,12 @@ class _ChatScreenState extends State<ChatScreen> {
             controller: widget.controller,
             padding: EdgeInsets.fromLTRB(kSide, top + 26, kSide, 20),
             children: [
-              Text('EMUASTRO’YA SOR', style: T.sectionLabel),
+              Text(tr('EMUASTRO’YA SOR'), style: T.sectionLabel),
               const SizedBox(height: 5),
-              Text('Sor', style: T.display),
+              Text(tr('Sor'), style: T.display),
               const SizedBox(height: 6),
               Text(
-                  'Bugün ${app.questionLimit - app.questionsToday < 0 ? 0 : app.questionLimit - app.questionsToday} soru hakkın kaldı · ${app.premium ? 'Premium' : 'Ücretsiz plan'}',
+                  l('Bugün ${(app.questionLimit - app.questionsToday).clamp(0, 9)} soru hakkın kaldı', '${(app.questionLimit - app.questionsToday).clamp(0, 9)} question${(app.questionLimit - app.questionsToday) == 1 ? '' : 's'} left today') + ' · ${app.premium ? 'Premium' : tr('Ücretsiz plan')}',
                   style: T.body),
               const SizedBox(height: 22),
               if (app.chat.isEmpty) ...[
@@ -72,7 +74,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   const SizedBox(width: 14),
                   Expanded(
                       child: Text(
-                          'Haritanı ve bugünkü gökyüzünü birlikte okuyarak yanıt veririm. Bir konu seç ya da kendi sorunu yaz.',
+                          tr('Haritanı ve bugünkü gökyüzünü birlikte okuyarak yanıt veririm. Bir konu seç ya da kendi sorunu yaz.'),
                           style: T.body.copyWith(color: C.ink, fontSize: 13.5))),
                 ]),
                 const SizedBox(height: 18),
@@ -116,7 +118,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 6),
                   child: Text(
-                      'Yorumlar eğlence ve öz farkındalık amaçlıdır; tıbbi, finansal veya hukuki tavsiye değildir.',
+                      tr('Yorumlar eğlence ve öz farkındalık amaçlıdır; tıbbi, finansal veya hukuki tavsiye değildir.'),
                       style: T.body.copyWith(fontSize: 9.4, color: C.greyLight)),
                 ),
             ],
@@ -139,7 +141,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   textInputAction: TextInputAction.send,
                   decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Haritana bir soru sor…',
+                      hintText: tr('Haritana bir soru sor…'),
                       hintStyle: TextStyle(fontFamily: 'Figtree', color: C.grey)),
                   style: const TextStyle(fontFamily: 'Figtree', fontSize: 14),
                 ),

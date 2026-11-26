@@ -1,6 +1,8 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+
+import '../l10n.dart';
 import 'package:flutter/rendering.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -27,7 +29,7 @@ class _ShareCardState extends State<ShareCard> {
       final img = await b.toImage(pixelRatio: 3);
       final data = await img.toByteData(format: ui.ImageByteFormat.png);
       await SharePlus.instance.share(ShareParams(
-        text: '${widget.text}\n\nEmuAstro ile günlük haritanı keşfet.',
+        text: '${widget.text}\n\n${l('EmuAstro ile günlük haritanı keşfet.', 'Discover your daily chart with EmuAstro.')}',
         files: [
           XFile.fromData(data!.buffer.asUint8List(),
               name: 'emuastro.png', mimeType: 'image/png')

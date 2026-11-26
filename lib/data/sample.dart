@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:math' as math;
 
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../astro/ephemeris.dart';
 import '../astro/interpret.dart';
 import '../services/backend.dart';
+import '../l10n.dart';
 
 export '../astro/interpret.dart'
     show SkyEvent, BirthData, Chart, scoreCats, scoreLabel, reportSections, reportText;
@@ -87,6 +90,19 @@ class AppData extends ChangeNotifier {
 
   bool onboarded = false;
   String themeMode = 'system';
+  String lang = 'system';
+  void setLang(String v) {
+    lang = v;
+    _prefs?.setString('lang', v);
+    twinsCache.clear();
+    notifyListeners();
+  }
+
+  /// Dil değişince metinleri yeniden üret.
+  void relocalize() {
+    twinsCache.clear();
+    _recompute();
+  }
   void setThemeMode(String m) {
     themeMode = m;
     _prefs?.setString('theme', m);
@@ -126,10 +142,10 @@ class AppData extends ChangeNotifier {
   int get performance => day.scores[0];
   List<String> get boxTips => day.tips;
   List<(String, String)> get moves => [
-        ('YAP', day.todo),
-        ('ÖZEN GÖSTER', day.watch),
-        ('UNUTMA', day.reminder),
-        ('DÖNEMİN TEMASI', day.period),
+        (tr('YAP'), day.todo),
+        (tr('ÖZEN GÖSTER'), day.watch),
+        (tr('UNUTMA'), day.reminder),
+        (tr('DÖNEMİN TEMASI'), day.period),
       ];
   List<Planet> get planets => [
         for (final p in chart.planets) Planet(p.id, p.lon, retro: p.retro)
@@ -161,6 +177,12 @@ class AppData extends ChangeNotifier {
     final p = _prefs!;
     onboarded = p.getBool('onboarded') ?? false;
     themeMode = p.getString('theme') ?? 'system';
+    lang = p.getString('lang') ?? 'system';
+    if (kIsWeb && Uri.base.queryParameters['lang'] != null) {
+      lang = Uri.base.queryParameters['lang']!;
+    }
+    final sys = PlatformDispatcher.instance.locale.languageCode;
+    L.en = lang == 'en' || (lang == 'system' && sys != 'tr');
     if (kIsWeb && Uri.base.queryParameters['theme'] != null) {
       themeMode = Uri.base.queryParameters['theme']!;
     }
@@ -223,14 +245,14 @@ class AppData extends ChangeNotifier {
     events = skyEvents(chart, today);
     twins = [
       for (final t in twinsOf(chart))
-        Twin(t.pct, t.c.name, t.c.job, t.common, t.c.pal)
+        Twin(t.pct, t.c.name, tr(t.c.job), t.common, t.c.pal)
     ];
     notifyListeners();
   }
 
   List<TwinMatch> twinsOf(Chart c) => twinsCache[_dayKeyBirth()] ??= twins_(c);
   final twinsCache = <String, List<TwinMatch>>{};
-  String _dayKeyBirth() => '${profile.local}-${profile.place}';
+  String _dayKeyBirth() => '${profile.local}-${profile.place}-${L.en}';
 
   Future<void> _save() async {
     final p = _prefs;

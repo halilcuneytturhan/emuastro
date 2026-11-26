@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../astro/places.dart';
 import '../data/sample.dart';
 import '../theme.dart';
@@ -75,7 +77,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               if (step > 0)
                 TextButton(
                     onPressed: () => setState(() => step--),
-                    child: Text('Geri',
+                    child: Text(tr('Geri'),
                         style: TextStyle(fontFamily: 'Figtree', color: C.grey))),
               const Spacer(),
               GestureDetector(
@@ -90,7 +92,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         color: C.button,
                         borderRadius: BorderRadius.circular(27)),
                     child: Center(
-                      child: Text(step == 4 ? 'Haritamı oluştur' : 'Devam',
+                      child: Text(step == 4 ? tr('Haritamı oluştur') : tr('Devam'),
                           style: const TextStyle(
                               fontFamily: 'Figtree',
                               fontWeight: FontWeight.w800,
@@ -148,8 +150,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
           const SizedBox(height: 30),
-          _title('EMUASTRO', 'Gökyüzü sana ne söylüyor?',
-              'Doğum haritanı hesaplayıp her gün sana özel skorlar, uyarılar ve öneriler hazırlıyoruz.'),
+          _title('EMUASTRO', tr('Gökyüzü sana ne söylüyor?'),
+              tr('Doğum haritanı hesaplayıp her gün sana özel skorlar, uyarılar ve öneriler hazırlıyoruz.')),
           Pearl(
             pal: Pal.purple,
             radius: 24,
@@ -157,8 +159,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: Row(children: [
               DotText('%72', pitch: 4.4),
               const SizedBox(width: 18),
-              const Expanded(
-                child: Text('Günün ritmi, gökyüzündeki hareketlerin doğum haritana etkisinden hesaplanır.',
+              Expanded(
+                child: Text(tr('Günün ritmi, gökyüzündeki hareketlerin doğum haritana etkisinden hesaplanır.'),
                     style: TextStyle(
                         fontFamily: 'Figtree', color: Colors.white, fontSize: 13)),
               ),
@@ -167,14 +169,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ]);
       case 1:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          _title('1 / 4', 'Sana nasıl hitap edelim?', 'Ana sayfada seni bu isimle karşılarız.'),
+          _title('1 / 4', tr('Sana nasıl hitap edelim?'), tr('Ana sayfada seni bu isimle karşılarız.')),
           TextField(
             controller: name,
             autofocus: true,
             onChanged: (_) => setState(() {}),
             style: T.heading.copyWith(fontSize: 18),
             decoration: InputDecoration(
-              hintText: 'İsmin',
+              hintText: tr('İsmin'),
               filled: true,
               fillColor: Colors.white,
               border: OutlineInputBorder(
@@ -185,8 +187,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ]);
       case 2:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          _title('2 / 4', 'Ne zaman doğdun?', 'Güneş ve gezegen burçların doğum tarihinden hesaplanır.'),
-          _field('Doğum tarihi', fmtDate(birth), () async {
+          _title('2 / 4', tr('Ne zaman doğdun?'), tr('Güneş ve gezegen burçların doğum tarihinden hesaplanır.')),
+          _field(tr('Doğum tarihi'), fmtDate(birth), () async {
             final d = await showDatePicker(
                 context: context,
                 initialDate: birth,
@@ -195,7 +197,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             if (d != null) setState(() => birth = d);
           }),
           const SizedBox(height: 12),
-          _field('Doğum saati', unknownTime ? 'Bilmiyorum' : time!.format(context), () async {
+          _field(tr('Doğum saati'), unknownTime ? tr('Bilmiyorum') : time!.format(context), () async {
             final r = await showTimePicker(context: context, initialTime: time!);
             if (r != null) setState(() {
               time = r;
@@ -206,38 +208,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             contentPadding: EdgeInsets.zero,
             value: unknownTime,
             onChanged: (v) => setState(() => unknownTime = v ?? false),
-            title: Text('Saatimi bilmiyorum (Ay ve Yükselen yaklaşık olur)',
+            title: Text(tr('Saatimi bilmiyorum (Ay ve Yükselen yaklaşık olur)'),
                 style: T.body.copyWith(fontSize: 13, color: C.ink)),
           ),
         ]);
       case 3:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          _title('3 / 4', 'Nerede doğdun?', 'Yükselen burcun ve evlerin doğum yerine göre hesaplanır.'),
-          _field('Doğum yeri', place.split(', ').first, () async {
+          _title('3 / 4', tr('Nerede doğdun?'), tr('Yükselen burcun ve evlerin doğum yerine göre hesaplanır.')),
+          _field(tr('Doğum yeri'), place.split(', ').first, () async {
             final r = await pickPlace(context, current: place);
             if (r != null) setState(() => place = r);
           }),
           const SizedBox(height: 12),
           Text(place, style: T.body.copyWith(fontSize: 12.5)),
           const SizedBox(height: 16),
-          Text('Listede ${places.length} şehir var: Türkiye’nin 81 ili ve yurt dışında Türklerin yoğun yaşadığı şehirler. Köyün ya da ilçen yoksa en yakın il merkezini seç.',
+          Text(l('Listede ${places.length} şehir var: Türkiye’nin 81 ili ve yurt dışında Türklerin yoğun yaşadığı şehirler. Köyün ya da ilçen yoksa en yakın il merkezini seç.', 'The list has ${places.length} cities: all 81 Turkish provinces and major cities abroad. If your town is missing, pick the nearest large city.'),
               style: T.body.copyWith(fontSize: 12.5)),
         ]);
       default:
         return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          _title('4 / 4', 'Verilerin sende kalır',
-              'Doğum bilgilerin ve tüm uygulama verilerin yalnızca bu cihazda saklanır.'),
+          _title('4 / 4', tr('Verilerin sende kalır'),
+              tr('Doğum bilgilerin ve tüm uygulama verilerin yalnızca bu cihazda saklanır.')),
           CheckboxListTile(
             contentPadding: EdgeInsets.zero,
             value: consent,
             onChanged: (v) => setState(() => consent = v ?? false),
             title: Text(
-                'Aydınlatma Metni’ni okudum; doğum bilgilerimin harita hesaplamak için işlenmesini kabul ediyorum.',
+                tr('Aydınlatma Metni’ni okudum; doğum bilgilerimin harita hesaplamak için işlenmesini kabul ediyorum.'),
                 style: T.body.copyWith(fontSize: 13, color: C.ink)),
           ),
           TextButton(
             onPressed: () => openLegal(context),
-            child: Text('Aydınlatma Metni ve Gizlilik Politikası',
+            child: Text(tr('Aydınlatma Metni ve Gizlilik Politikası'),
                 style: TextStyle(fontFamily: 'Figtree', color: C.accent, fontWeight: FontWeight.w700)),
           ),
         ]);

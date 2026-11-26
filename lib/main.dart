@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import 'l10n.dart';
 import 'package:flutter/services.dart';
 
 import 'data/sample.dart';
@@ -14,6 +16,7 @@ import 'screens/relations.dart';
 import 'theme.dart';
 import 'widgets/common.dart' show showInfo;
 import 'widgets/nav.dart';
+import 'l10n.dart';
 import 'widgets/surface.dart';
 
 Future<void> main() async {
@@ -51,8 +54,20 @@ class _EmuAstroAppState extends State<EmuAstroApp> with WidgetsBindingObserver {
   }
 
   String _lastMode = app.themeMode;
+  String _lastLang = app.lang;
   void _onApp() {
-    if (app.themeMode != _lastMode) setState(() => _lastMode = app.themeMode);
+    if (app.themeMode != _lastMode || app.lang != _lastLang) {
+      final langChanged = app.lang != _lastLang;
+      _lastMode = app.themeMode;
+      _lastLang = app.lang;
+      setState(() {});
+      if (langChanged) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          app.relocalize();
+          Notifications.reschedule();
+        });
+      }
+    }
   }
 
   @override
@@ -71,10 +86,12 @@ class _EmuAstroAppState extends State<EmuAstroApp> with WidgetsBindingObserver {
     final dark = app.themeMode == 'dark' ||
         (app.themeMode == 'system' && sys == Brightness.dark);
     C.dark = dark;
+    final sysLang = WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+    L.en = app.lang == 'en' || (app.lang == 'system' && sysLang != 'tr');
     SystemChrome.setSystemUIOverlayStyle(
         dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
     return MaterialApp(
-      key: ValueKey(dark),
+      key: ValueKey('$dark-${L.en}'),
       title: 'EmuAstro',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -138,7 +155,7 @@ class _ShellState extends State<Shell> with WidgetsBindingObserver {
       final m = app.rewardMessage;
       if (m != null && mounted) {
         app.rewardMessage = null;
-        showInfo(context, 'Seri ödülü', m);
+        showInfo(context, tr('Seri ödülü'), m);
       }
     });
     // Karşılaştırma için: ?tab=0..3&scroll=300

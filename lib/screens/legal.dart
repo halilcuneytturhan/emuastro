@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../theme.dart';
 import '../widgets/common.dart';
 
@@ -10,15 +12,15 @@ void openLegal(BuildContext context) => Navigator.of(context)
 /// hukuk danışmanı tarafından gözden geçirilmeli).
 class LegalScreen extends StatelessWidget {
   const LegalScreen({super.key});
-  static const sections = [
-    ('Veri sorumlusu', 'EmuAstro uygulamasının geliştiricisi. İletişim bilgisi mağaza sayfasında yer alır.'),
-    ('İşlenen veriler', 'İsim, doğum tarihi, doğum saati, doğum yeri; isteğe bağlı olarak telefon numarası, kullanıcı adı, eklediğin arkadaşların isim ve doğum bilgileri, sohbet geçmişi ve kazandığın rozetler.'),
-    ('İşleme amacı', 'Doğum haritanı ve günlük yorumlarını hesaplamak, arkadaşlarınla uyum raporu oluşturmak, uygulama içi tercihlerini hatırlamak.'),
-    ('Saklama yeri', 'Bu sürümde tüm veriler yalnızca cihazında saklanır ve sunucuya gönderilmez. Rehberin yalnızca kişi seçerken cihazda okunur, kaydedilmez. Bildirimler cihazda planlanır.'),
-    ('Saklama süresi', 'Veriler, uygulamayı silene ya da Ayarlar > Tüm verileri sil seçeneğini kullanana kadar cihazında kalır.'),
-    ('Satın almalar', 'Abonelik ödemeleri App Store veya Google Play tarafından işlenir; ödeme bilgilerine erişimimiz yoktur.'),
-    ('Hakların', 'KVKK 11. madde kapsamındaki haklarını (bilgi talebi, düzeltme, silme vb.) uygulama içinden verilerini düzenleyerek ya da silerek kullanabilir, sorularını mağaza sayfasındaki iletişim adresine iletebilirsin.'),
-    ('Sorumluluk reddi', 'Astrolojik yorumlar eğlence ve öz farkındalık amaçlıdır; tıbbi, psikolojik, finansal veya hukuki tavsiye yerine geçmez.'),
+  static List<(String, String)> get sections => [
+    (tr('Veri sorumlusu'), tr('EmuAstro uygulamasının geliştiricisi. İletişim bilgisi mağaza sayfasında yer alır.')),
+    (tr('İşlenen veriler'), tr('İsim, doğum tarihi, doğum saati, doğum yeri; isteğe bağlı olarak telefon numarası, kullanıcı adı, eklediğin arkadaşların isim ve doğum bilgileri, sohbet geçmişi ve kazandığın rozetler.')),
+    (tr('İşleme amacı'), tr('Doğum haritanı ve günlük yorumlarını hesaplamak, arkadaşlarınla uyum raporu oluşturmak, uygulama içi tercihlerini hatırlamak.')),
+    (tr('Saklama yeri'), tr('Bu sürümde tüm veriler yalnızca cihazında saklanır ve sunucuya gönderilmez. Rehberin yalnızca kişi seçerken cihazda okunur, kaydedilmez. Bildirimler cihazda planlanır.')),
+    (tr('Saklama süresi'), tr('Veriler, uygulamayı silene ya da Ayarlar > Tüm verileri sil seçeneğini kullanana kadar cihazında kalır.')),
+    (tr('Satın almalar'), tr('Abonelik ödemeleri App Store veya Google Play tarafından işlenir; ödeme bilgilerine erişimimiz yoktur.')),
+    (tr('Hakların'), tr('KVKK 11. madde kapsamındaki haklarını (bilgi talebi, düzeltme, silme vb.) uygulama içinden verilerini düzenleyerek ya da silerek kullanabilir, sorularını mağaza sayfasındaki iletişim adresine iletebilirsin.')),
+    (tr('Sorumluluk reddi'), tr('Astrolojik yorumlar eğlence ve öz farkındalık amaçlıdır; tıbbi, psikolojik, finansal veya hukuki tavsiye yerine geçmez.')),
   ];
   @override
   Widget build(BuildContext context) {
@@ -34,9 +36,9 @@ class LegalScreen extends StatelessWidget {
                   onTap: () => Navigator.pop(context),
                   child: const Icon(Icons.chevron_left_rounded, size: 32))),
           const SizedBox(height: 10),
-          Text('KVKK · GİZLİLİK', style: T.sectionLabel),
+          Text(tr('KVKK · GİZLİLİK'), style: T.sectionLabel),
           const SizedBox(height: 6),
-          Text('Aydınlatma Metni', style: T.monoTitleBold),
+          Text(tr('Aydınlatma Metni'), style: T.monoTitleBold),
           const SizedBox(height: 18),
           for (final (h, b) in sections) ...[
             Text(h, style: T.heading),

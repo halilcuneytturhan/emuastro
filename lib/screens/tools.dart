@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../astro/ephemeris.dart';
 import '../astro/interpret.dart';
 import '../data/sample.dart' hide Chart, BirthData, scoreLabel, scoreCats;
@@ -11,8 +13,8 @@ import '../widgets/surface.dart';
 import 'friends.dart' show fmtDate;
 import 'premium.dart';
 
-const _days = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
-const _months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+List<String> get _days => [for (var i = 1; i <= 7; i++) dayName(i)];
+List<String> get _months => [for (var i = 1; i <= 12; i++) monthName(i)];
 
 Widget _scaffold(BuildContext context, String kicker, String title, List<Widget> children) {
   final top = MediaQuery.of(context).padding.top;
@@ -63,12 +65,12 @@ class GoodDayFinder extends StatefulWidget {
 }
 
 class _GoodDayFinderState extends State<GoodDayFinder> {
-  static const purposes = [
-    ('İş görüşmesi', 1, ['mercury', 'sun', 'jupiter']),
-    ('İlk buluşma', 0, ['venus', 'moon']),
-    ('Taşınma / yeni başlangıç', 2, ['moon', 'jupiter', 'mars']),
-    ('Önemli bir karar', 1, ['mercury', 'saturn']),
-    ('Spor hedefi başlatmak', 2, ['mars', 'sun']),
+  static List<(String, int, List<String>)> get purposes => [
+    (tr('İş görüşmesi'), 1, ['mercury', 'sun', 'jupiter']),
+    (tr('İlk buluşma'), 0, ['venus', 'moon']),
+    (tr('Taşınma / yeni başlangıç'), 2, ['moon', 'jupiter', 'mars']),
+    (tr('Önemli bir karar'), 1, ['mercury', 'saturn']),
+    (tr('Spor hedefi başlatmak'), 2, ['mars', 'sun']),
   ];
   int sel = 0;
 
@@ -80,7 +82,7 @@ class _GoodDayFinderState extends State<GoodDayFinder> {
       final d = app.today.add(Duration(days: k));
       var s = dailyScore(app.chart, d, cat).toDouble();
       final hits = transitHits(app.chart, DateTime(d.year, d.month, d.day, 12), only: planets);
-      String why = 'Genel akış destekleyici.';
+      String why = tr('Genel akış destekleyici.');
       for (final h in hits) {
         final good = h.asp == 'üçgen' || h.asp == 'altmışlık';
         s += good ? 6 : (h.asp == 'kavuşum' ? 2 : -6);
@@ -89,8 +91,8 @@ class _GoodDayFinderState extends State<GoodDayFinder> {
       days.add((d, s.round().clamp(5, 99), why));
     }
     days.sort((a, b) => b.$2.compareTo(a.$2));
-    return _scaffold(context, 'PREMIUM ARAÇ', 'Uygun gün bulucu', [
-      Text('Ne için gün arıyorsun?', style: T.body.copyWith(color: C.ink)),
+    return _scaffold(context, tr('PREMIUM ARAÇ'), tr('Uygun gün bulucu'), [
+      Text(tr('Ne için gün arıyorsun?'), style: T.body.copyWith(color: C.ink)),
       const SizedBox(height: 12),
       Wrap(spacing: 8, runSpacing: 8, children: [
         for (var i = 0; i < purposes.length; i++)
@@ -101,11 +103,11 @@ class _GoodDayFinderState extends State<GoodDayFinder> {
           ),
       ]),
       const SizedBox(height: 20),
-      Text('Önümüzdeki 30 günün en uygun günleri', style: T.heading),
+      Text(tr('Önümüzdeki 30 günün en uygun günleri'), style: T.heading),
       const SizedBox(height: 12),
       for (final (i, (d, s, why)) in days.take(5).indexed)
         if (i > 0 && !app.premium)
-          _lockedRow(context, '${i + 1}. gün Premium’da')
+          _lockedRow(context, l('${i + 1}. gün Premium’da', 'Day ${i + 1} is in Premium'))
         else
           Container(
             margin: const EdgeInsets.only(bottom: 10),
@@ -145,6 +147,15 @@ const _outerTheme = {
   'neptune': 'hayaller ve sezgi',
   'pluto': 'derin dönüşüm',
 };
+const _outerThemeEn = {
+  'jupiter': 'growth and opportunity', 'saturn': 'responsibility and maturity',
+  'uranus': 'sudden change and liberation', 'neptune': 'dreams and intuition', 'pluto': 'deep transformation',
+};
+const _natalAreaEn = {
+  'sun': 'identity and goals', 'moon': 'emotional world and home', 'mercury': 'communication and learning',
+  'venus': 'relationships and money', 'mars': 'energy and career moves', 'jupiter': 'beliefs and luck',
+  'saturn': 'structure and duties', 'pluto': 'areas of power', 'asc': 'appearance and approach',
+};
 const _natalArea = {
   'sun': 'kimliğin ve hedeflerin',
   'moon': 'duygusal dünyan ve evin',
@@ -170,16 +181,16 @@ class YearForecast extends StatelessWidget {
           .take(3);
       final lines = [
         for (final h in hits)
-          '${aspectPhrase(h.transit, h.natal, h.asp)}: ${_natalArea[h.natal] ?? ''} alanında ${_outerTheme[h.transit]} ${h.asp == 'kare' || h.asp == 'karşıtlık' ? 'sınavı' : 'desteği'}.'
+          l('${aspectPhrase(h.transit, h.natal, h.asp)}: ${_natalArea[h.natal] ?? ''} alanında ${_outerTheme[h.transit]} ${h.asp == 'kare' || h.asp == 'karşıtlık' ? 'sınavı' : 'desteği'}.', '${aspectPhrase(h.transit, h.natal, h.asp)}: ${h.asp == 'kare' || h.asp == 'karşıtlık' ? 'a test' : 'support'} of ${_outerThemeEn[h.transit]} for your ${_natalAreaEn[h.natal] ?? ''}.')
       ];
       final sun = positions(d.toUtc()).first;
       if (lines.isEmpty) {
-        lines.add('Güneş haritanın ${app.chart.house(sun.lon)}. evinde: sakin ve dengeli bir ay; ${signs[sun.sign]} temaları öne çıkıyor.');
+        lines.add(l('Güneş haritanın ${app.chart.house(sun.lon)}. evinde: sakin ve dengeli bir ay; ${signs[sun.sign]} temaları öne çıkıyor.', 'The Sun is in your house ${app.chart.house(sun.lon)}: a calm, balanced month; ${signs[sun.sign]} themes stand out.'));
       }
       months.add((d, lines));
     }
-    return _scaffold(context, 'PREMIUM RAPOR', 'Önümüzdeki 12 ay', [
-      Text('Jüpiter, Satürn, Uranüs, Neptün ve Plüton’un doğum haritana etkileri.',
+    return _scaffold(context, tr('PREMIUM RAPOR'), tr('Önümüzdeki 12 ay'), [
+      Text(tr('Jüpiter, Satürn, Uranüs, Neptün ve Plüton’un doğum haritana etkileri.'),
           style: T.body),
       const SizedBox(height: 18),
       for (final (i, (d, lines)) in months.indexed)
@@ -226,16 +237,16 @@ class _QuickMatchState extends State<QuickMatch> {
 
   @override
   Widget build(BuildContext context) {
-    return _scaffold(context, 'ÜCRETSİZ', 'Hızlı uyum testi', [
-      Text('Yalnızca doğum tarihiyle iki harita arasındaki uyumu gör, sonucu paylaş.',
+    return _scaffold(context, tr('ÜCRETSİZ'), tr('Hızlı uyum testi'), [
+      Text(tr('Yalnızca doğum tarihiyle iki harita arasındaki uyumu gör, sonucu paylaş.'),
           style: T.body),
       const SizedBox(height: 16),
-      TextField(controller: name, decoration: const InputDecoration(labelText: 'Onun ismi')),
+      TextField(controller: name, decoration: InputDecoration(labelText: tr('Onun ismi'))),
       const SizedBox(height: 10),
       ListTile(
         contentPadding: EdgeInsets.zero,
-        title: const Text('Doğum tarihi', style: TextStyle(fontFamily: 'Figtree')),
-        trailing: Text(birth == null ? 'Seç' : fmtDate(birth!), style: T.heading),
+        title: Text(tr('Doğum tarihi'), style: TextStyle(fontFamily: 'Figtree')),
+        trailing: Text(birth == null ? tr('Seç') : fmtDate(birth!), style: T.heading),
         onTap: () async {
           final d = await showDatePicker(
               context: context,
@@ -262,7 +273,7 @@ class _QuickMatchState extends State<QuickMatch> {
               const SizedBox(height: 16),
               DotText('%${result!.$1}', pitch: 7.5),
               const SizedBox(height: 10),
-              Text('${scoreLabel(result!.$1)} uyum · Güneş ${app.chart.signName('sun')} & ${other!.signName('sun')}',
+              Text('${scoreLabel(result!.$1)} · ${tr('Güneş')} ${app.chart.signName('sun')} & ${other!.signName('sun')}',
                   style: const TextStyle(fontFamily: 'Figtree', color: Colors.white, fontSize: 13)),
               const SizedBox(height: 10),
               const Align(
@@ -294,10 +305,10 @@ class YearSummary extends StatelessWidget {
             only: ['jupiter', 'saturn', 'uranus', 'neptune', 'pluto'])
         .firstOrNull;
     final text =
-        '$y yılım: en parlak ayım ${_months[bestMonth - 1]} (%$bestScore), ${app.badges.length} rozet, ${app.streak} günlük seri.';
-    return _scaffold(context, 'YILIN ÖZETİ', '$y senin yılın', [
+        l('$y yılım: en parlak ayım ${_months[bestMonth - 1]} (%$bestScore), ${app.badges.length} rozet, ${app.streak} günlük seri.', 'My $y: brightest month ${_months[bestMonth - 1]} ($bestScore%), ${app.badges.length} badges, ${app.streak}-day streak.');
+    return _scaffold(context, tr('YILIN ÖZETİ'), l('$y senin yılın', 'Your $y'), [
       ShareCard(
-        text: '$text EmuAstro’da kendi yılını gör.',
+        text: l('$text EmuAstro’da kendi yılını gör.', '$text See your own year on EmuAstro.'),
         child: Pearl(
           pal: Pal.purple,
           radius: 28,
@@ -307,11 +318,11 @@ class YearSummary extends StatelessWidget {
             const SizedBox(height: 22),
             DotText('$y', pitch: 6),
             const SizedBox(height: 22),
-            _row('En parlak ay', '${_months[bestMonth - 1]} · %$bestScore'),
-            _row('Yılın teması', big == null ? 'Denge ve istikrar' : '${planetName[big.transit]} · ${_outerTheme[big.transit]}'),
-            _row('Kazanılan rozet', '${app.badges.length}'),
-            _row('En uzun seri', '${app.streak} gün'),
-            _row('Büyük üçlün', '${app.sun} · ${app.moon} · ${app.asc}'),
+            _row(tr('En parlak ay'), '${_months[bestMonth - 1]} · %$bestScore'),
+            _row(tr('Yılın teması'), big == null ? tr('Denge ve istikrar') : '${planetName[big.transit]} · ${L.en ? _outerThemeEn[big.transit] : _outerTheme[big.transit]}'),
+            _row(tr('Kazanılan rozet'), '${app.badges.length}'),
+            _row(tr('En uzun seri'), l('${app.streak} gün', '${app.streak} days')),
+            _row(tr('Büyük üçlün'), '${app.sun} · ${app.moon} · ${app.asc}'),
             const SizedBox(height: 8),
             const Align(alignment: Alignment.centerRight, child: ShareTap(child: ShareIcon(size: 14))),
           ]),
@@ -343,9 +354,9 @@ List<(String, String)> synastrySections(Chart a, Chart b) {
   }
 
   return [
-    ('Aşk ve çekim', rel('venus', 'mars', 'Venüs–Mars uyumu güçlü: aranızda doğal bir çekim var.', 'Venüs–Mars gerilimi: çekim yoğun ama tempo farkı tartışma çıkarabilir.', 'Çekim zamanla ve ortak deneyimle büyüyen türden.')),
-    ('İletişim', rel('mercury', 'mercury', 'Zihinleriniz aynı dili konuşuyor; uzun sohbetler kolay.', 'Düşünme tarzlarınız farklı; dinlemeye zaman ayırmak önemli.', 'İletişim tarzlarınız birbirini tamamlıyor.')),
-    ('Duygusal bağ', rel('moon', 'moon', 'Duygusal ihtiyaçlarınız benzer; birbirinizi rahatlatıyorsunuz.', 'Duygusal ritimleriniz farklı; ihtiyaçlarınızı açıkça söyleyin.', 'Duygusal bağ güvenle derinleşiyor.')),
-    ('Uzun vade', rel('saturn', 'sun', 'Satürn bağı: ilişki ciddiyet ve kalıcılık taşıyor.', 'Satürn baskısı: sorumluluklar ilişkiyi zaman zaman ağırlaştırabilir.', 'Uzun vadeli yapı ortak hedeflerle kurulur.')),
+    (tr('Aşk ve çekim'), rel('venus', 'mars', tr('Venüs–Mars uyumu güçlü: aranızda doğal bir çekim var.'), tr('Venüs–Mars gerilimi: çekim yoğun ama tempo farkı tartışma çıkarabilir.'), tr('Çekim zamanla ve ortak deneyimle büyüyen türden.'))),
+    (tr('İletişim'), rel('mercury', 'mercury', tr('Zihinleriniz aynı dili konuşuyor; uzun sohbetler kolay.'), tr('Düşünme tarzlarınız farklı; dinlemeye zaman ayırmak önemli.'), tr('İletişim tarzlarınız birbirini tamamlıyor.'))),
+    (tr('Duygusal bağ'), rel('moon', 'moon', tr('Duygusal ihtiyaçlarınız benzer; birbirinizi rahatlatıyorsunuz.'), tr('Duygusal ritimleriniz farklı; ihtiyaçlarınızı açıkça söyleyin.'), tr('Duygusal bağ güvenle derinleşiyor.'))),
+    (tr('Uzun vade'), rel('saturn', 'sun', tr('Satürn bağı: ilişki ciddiyet ve kalıcılık taşıyor.'), tr('Satürn baskısı: sorumluluklar ilişkiyi zaman zaman ağırlaştırabilir.'), tr('Uzun vadeli yapı ortak hedeflerle kurulur.'))),
   ];
 }

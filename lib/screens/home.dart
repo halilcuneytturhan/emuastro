@@ -2,6 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
+
 import '../data/sample.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -23,8 +25,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final top = MediaQuery.of(context).padding.top;
     final d = app.today;
-    final dateLabel = trUpper(
-        '${d.day} ${trMonths[d.month - 1]} ${trDays[d.weekday - 1]}');
+    final dateLabel = upper(l('${d.day} ${monthName(d.month)} ${dayName(d.weekday)}',
+        '${dayName(d.weekday)}, ${monthName(d.month)} ${d.day}'));
     final events = app.events;
     final banner = events.isEmpty
         ? null
@@ -44,7 +46,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Text(dateLabel, style: T.sectionLabel),
                     const SizedBox(height: 4.5),
-                    Text('Merhaba, ${app.profile.name}', style: T.display),
+                    Text('${tr('Merhaba')}, ${app.profile.name}', style: T.display),
                   ]),
             ),
             Padding(
@@ -52,9 +54,9 @@ class HomeScreen extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   app.markEventsSeen();
-                  showInfo(context, 'Bildirimler', [
-                  for (final e in events) '• ${e.title} (${e.date.day} ${trMonths[e.date.month - 1]}): etkilerin hazır.',
-                  '• Bugünkü yaşam haritan: Fırsat ve akış %${app.day.scores[0]}.',
+                  showInfo(context, tr('Bildirimler'), [
+                  for (final e in events) l('• ${e.title} (${e.date.day} ${monthName(e.date.month)}): etkilerin hazır.', '• ${e.title} (${monthName(e.date.month)} ${e.date.day}): your reading is ready.'),
+                  l('• Bugünün ritmi: Şans ve akış %${app.day.scores[0]}.', '• Today’s rhythm: Luck & flow ${app.day.scores[0]}%.'),
                 ].join('\n'));
                 },
                 child: SizedBox(
@@ -94,7 +96,7 @@ class HomeScreen extends StatelessWidget {
               child: Row(children: [
                 Text(d.month == 2 ? '♥' : '✦', style: TextStyle(fontSize: 20, color: C.accent)),
                 const SizedBox(width: 12),
-                Expanded(child: Text(d.month == 2 ? 'Sevgililer Günü uyum testi' : '${d.month == 12 ? d.year : d.year - 1} yılının özeti hazır',
+                Expanded(child: Text(d.month == 2 ? tr('Sevgililer Günü uyum testi') : l('${d.month == 12 ? d.year : d.year - 1} yılının özeti hazır', 'Your ${d.month == 12 ? d.year : d.year - 1} year in review is ready'),
                     style: T.heading.copyWith(fontSize: 13.6))),
                 const Icon(Icons.chevron_right_rounded),
               ]),
@@ -112,9 +114,9 @@ class HomeScreen extends StatelessWidget {
         _pad(const MoonCard()),
         const SizedBox(height: 56),
         _pad(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('Gökyüzü takvimi', style: T.monoTitle),
+          Text(tr('Gökyüzü takvimi'), style: T.monoTitle),
           const SizedBox(height: 6),
-          Text('Yaklaşan olaylar ve sana dokunuşları',
+          Text(tr('Yaklaşan olaylar ve sana dokunuşları'),
               style: T.body.copyWith(fontSize: 12.6)),
           const SizedBox(height: 11),
           for (final e in events) ...[
@@ -123,13 +125,13 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 12),
           ],
           const SizedBox(height: 10),
-          Text('Bugünün pusulası', style: T.monoTitleBold),
+          Text(tr('Bugünün pusulası'), style: T.monoTitleBold),
           const SizedBox(height: 24),
         ])),
         const _MoveFolders(),
         const SizedBox(height: 25),
         _pad(_DarkButton(
-            label: 'Tüm rapor',
+            label: tr('Tüm rapor'),
             mono: true,
             height: 68,
             color: const Color(0xFF1C1B21),
@@ -139,7 +141,7 @@ class HomeScreen extends StatelessWidget {
                 builder: (_) => const DetailScreen())))),
         const SizedBox(height: 43),
         _pad(_DarkButton(
-            label: 'PDF indir / paylaş',
+            label: tr('PDF indir / paylaş'),
             height: 61,
             color: C.button,
             trailing: const ShareIcon(size: 13),
@@ -148,17 +150,17 @@ class HomeScreen extends StatelessWidget {
                 await exportPdf();
               } catch (e) {
                 if (context.mounted) {
-                  showInfo(context, 'PDF', 'PDF oluşturulamadı: $e');
+                  showInfo(context, 'PDF', l('PDF oluşturulamadı: $e', 'Could not create PDF: $e'));
                 }
               }
             })),
         const SizedBox(height: 14),
         _pad(Text(
-            'Tüm başlıklar tek dosyada. Paylaş menüsünden Dosyalar’a kaydedebilirsin.',
+            tr('Tüm başlıklar tek dosyada. Paylaş menüsünden Dosyalar’a kaydedebilirsin.'),
             style: T.body.copyWith(fontSize: 9.4))),
         const SizedBox(height: 40),
         _pad(Text(
-            'Astrolojik yorumlar eğlence ve öz farkındalık amaçlıdır; tıbbi, finansal, hukuki tavsiye, garanti edilmiş performans veya kesin sonuç değildir.',
+            tr('Astrolojik yorumlar eğlence ve öz farkındalık amaçlıdır; tıbbi, finansal, hukuki tavsiye, garanti edilmiş performans veya kesin sonuç değildir.'),
             style: T.body.copyWith(fontSize: 9.4, color: C.greyLight))),
       ],
     );
@@ -174,7 +176,7 @@ Pal palForEvent(SkyEvent e) => switch (e.kind) {
       _ => Pal.greenBand,
     };
 
-String get todayTag => '${app.today.day} ${trMonths[app.today.month - 1]} · emuastro';
+String get todayTag => l('${app.today.day} ${monthName(app.today.month)} · emuastro', '${monthName(app.today.month)} ${app.today.day} · emuastro');
 
 void openEvent(BuildContext context, SkyEvent e, Pal pal) =>
     Navigator.of(context).push(MaterialPageRoute(
@@ -232,7 +234,7 @@ class _ChartFolders extends StatelessWidget {
               tabS: (w - 37.5) * .5 - 15,
               tabE: (w - 37.5) * .78,
               pal: Pal.pink,
-              label: 'GÜNEŞ'),
+              label: tr('GÜNEŞ')),
           back(
               top: 25,
               l: 8,
@@ -240,7 +242,7 @@ class _ChartFolders extends StatelessWidget {
               tabS: (w - 16.5) * .4 - 18,
               tabE: (w - 16.5) * .68,
               pal: Pal.blue,
-              label: 'YÜKSELEN'),
+              label: tr('YÜKSELEN')),
           Positioned(
             top: 50,
             left: 0,
@@ -275,10 +277,10 @@ class _ChartFolderFront extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      const Positioned(
+      Positioned(
           left: 16,
           top: 8,
-          child: Text('Doğum Dosyan',
+          child: Text(tr('Doğum Dosyan'),
               style: TextStyle(
                   fontFamily: 'PlexMono',
                   fontWeight: FontWeight.w500,
@@ -296,8 +298,8 @@ class _ChartFolderFront extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
               app.premium
-                  ? 'Tüm ${app.totalSections} bölüm açık'
-                  : '${app.unlocked} bölüm açık · ${app.totalSections - app.unlocked} bölüm Premium\'da',
+                  ? l('Tüm ${app.totalSections} bölüm açık', 'All ${app.totalSections} sections unlocked')
+                  : l('${app.unlocked} bölüm açık · ${app.totalSections - app.unlocked} bölüm Premium\'da', '${app.unlocked} section unlocked · ${app.totalSections - app.unlocked} in Premium'),
               style: const TextStyle(
                   fontFamily: 'Figtree',
                   fontSize: 12.6,
@@ -328,7 +330,7 @@ class _ChartFolderFront extends StatelessWidget {
         left: 22,
         bottom: 22,
         width: 228,
-        child: Text('Mizaç, duygusal dünya, gölge yönler, aşk ve kariyer kodların.',
+        child: Text(tr('Mizaç, duygusal dünya, gölge yönler, aşk ve kariyer kodların.'),
             style: TextStyle(
                 fontFamily: 'Figtree',
                 fontSize: 10.6,
@@ -373,7 +375,7 @@ class _NeverCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ShareCard(
-      text: 'Bugün uzak dur: ${app.neverToday}',
+      text: '${tr('Bugün uzak dur')}: ${app.neverToday}',
       child: Pearl(
       pal: Pal.red,
       radius: 23,
@@ -384,7 +386,7 @@ class _NeverCard extends StatelessWidget {
       shadowY: 10,
       padding: const EdgeInsets.fromLTRB(21.5, 20, 21.5, 14),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text('Bugün uzak dur', style: T.monoCard),
+        Text(tr('Bugün uzak dur'), style: T.monoCard),
         const SizedBox(height: 11),
         Text(app.neverToday, style: T.cardBody),
         const SizedBox(height: 18),
@@ -420,10 +422,10 @@ class _PerformanceState extends State<_Performance> {
     const ch = 359.0;
     final order = [(front + 1) % 3, (front + 2) % 3, front];
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _pad(Text('BUGÜNÜN ENERJİSİ', style: T.sectionLabel)),
+      _pad(Text(tr('BUGÜNÜN ENERJİSİ'), style: T.sectionLabel)),
       const SizedBox(height: 13),
       _pad(Row(children: [
-        Expanded(child: Text('Günün ritmi', style: T.monoTitle)),
+        Expanded(child: Text(tr('Günün ritmi'), style: T.monoTitle)),
         Container(
           width: 51,
           height: 29,
@@ -519,7 +521,7 @@ class _PerfCard extends StatelessWidget {
           top: 19,
           child: GestureDetector(
             onTap: () => showInfo(context, title,
-                'Günlük yaşam haritası, transitlerin doğum haritana etkisinden hesaplanan 0–100 arası bir skordur. %$v $label anlamına gelir.'),
+                l('Günün ritmi, transitlerin doğum haritana etkisinden hesaplanan 0–100 arası bir skordur. %$v: $label.', 'The rhythm of the day is a 0–100 score from how transits affect your birth chart. $v%: $label.')),
             child: Container(
               width: 17,
               height: 17,

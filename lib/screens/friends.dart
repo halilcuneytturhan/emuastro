@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import '../l10n.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 
 import '../astro/interpret.dart';
@@ -46,7 +48,7 @@ Future<(String, DateTime, String, String, bool)?> birthForm(BuildContext context
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: T.monoTitleBold),
+                Text(tr(title), style: T.monoTitleBold),
                 if (note != null) ...[
                   const SizedBox(height: 6),
                   Text(note, style: T.body.copyWith(fontSize: 11.5)),
@@ -54,9 +56,9 @@ Future<(String, DateTime, String, String, bool)?> birthForm(BuildContext context
                 const SizedBox(height: 14),
                 TextField(
                     controller: nameC,
-                    decoration: const InputDecoration(labelText: 'İsim')),
+                    decoration: InputDecoration(labelText: tr('İsim'))),
                 const SizedBox(height: 8),
-                _pickRow('Doğum tarihi', fmtDate(b), () async {
+                _pickRow(tr('Doğum tarihi'), fmtDate(b), () async {
                   final d = await showDatePicker(
                       context: ctx,
                       initialDate: b,
@@ -64,7 +66,7 @@ Future<(String, DateTime, String, String, bool)?> birthForm(BuildContext context
                       lastDate: DateTime.now());
                   if (d != null) setS(() => b = d);
                 }),
-                _pickRow('Doğum saati', t, () async {
+                _pickRow(tr('Doğum saati'), t, () async {
                   final parts = t.split(':');
                   final r = await showTimePicker(
                       context: ctx,
@@ -76,7 +78,7 @@ Future<(String, DateTime, String, String, bool)?> birthForm(BuildContext context
                         '${r.hour.toString().padLeft(2, '0')}:${r.minute.toString().padLeft(2, '0')}');
                   }
                 }),
-                _pickRow('Doğum yeri', pl, () async {
+                _pickRow(tr('Doğum yeri'), pl, () async {
                   final r = await pickPlace(ctx, current: pl);
                   if (r != null) setS(() => pl = r);
                 }),
@@ -85,7 +87,7 @@ Future<(String, DateTime, String, String, bool)?> birthForm(BuildContext context
                     contentPadding: EdgeInsets.zero,
                     value: partner,
                     onChanged: (v) => setS(() => partner = v ?? false),
-                    title: const Text('Ruh eşim / partnerim',
+                    title: Text(tr('Ruh eşim / partnerim'),
                         style: TextStyle(fontFamily: 'Figtree')),
                   ),
                 const SizedBox(height: 16),
@@ -100,7 +102,7 @@ Future<(String, DateTime, String, String, bool)?> birthForm(BuildContext context
                       if (nameC.text.trim().isEmpty) return;
                       Navigator.pop(ctx, (nameC.text.trim(), b, t, pl, partner));
                     },
-                    child: const Text('Kaydet',
+                    child: Text(tr('Kaydet'),
                         style: TextStyle(
                             fontFamily: 'Figtree', fontWeight: FontWeight.w800)),
                   ),
@@ -129,10 +131,10 @@ Widget _pickRow(String label, String value, VoidCallback onTap) => InkWell(
 Future<void> addFriendFlow(BuildContext context,
     {String name = '', bool partner = false}) async {
   final r = await birthForm(context,
-      title: partner ? 'Partner ekle' : 'Arkadaş ekle',
+      title: partner ? tr('Partner ekle') : tr('Arkadaş ekle'),
       name: name,
       showPartner: !partner,
-      note: 'Doğum saatini bilmiyorsan 12:00 bırak; Ay ve Yükselen yaklaşık olur.');
+      note: tr('Doğum saatini bilmiyorsan 12:00 bırak; Ay ve Yükselen yaklaşık olur.'));
   if (r == null) return;
   final (n, b, t, pl, isPartner) = r;
   final hm = t.split(':');
@@ -144,15 +146,15 @@ Future<void> addFriendFlow(BuildContext context,
 /// Rehberden kişi seçip arkadaş olarak ekler. Rehber yalnızca cihazda okunur.
 Future<void> pickFromContacts(BuildContext context) async {
   if (kIsWeb) {
-    showInfo(context, 'Rehber', 'Rehber erişimi yalnızca iOS ve Android uygulamasında çalışır.');
+    showInfo(context, tr('Rehber'), tr('Rehber erişimi yalnızca iOS ve Android uygulamasında çalışır.'));
     return;
   }
   try {
     final st = await FlutterContacts.permissions.request(PermissionType.read);
     if (st != PermissionStatus.granted && st != PermissionStatus.limited) {
       if (context.mounted) {
-        showInfo(context, 'İzin gerekli',
-            'Rehber izni verilmedi. Ayarlar > EmuAstro > Kişiler bölümünden izin verebilirsin.');
+        showInfo(context, tr('İzin gerekli'),
+            tr('Rehber izni verilmedi. Ayarlar > EmuAstro > Kişiler bölümünden izin verebilirsin.'));
       }
       return;
     }
@@ -163,7 +165,7 @@ Future<void> pickFromContacts(BuildContext context) async {
       try {
         final m = await Backend.matchContacts(phones);
         if (context.mounted && m.isNotEmpty) {
-          showInfo(context, 'Rehberinde EmuAstro’da olanlar',
+          showInfo(context, tr('Rehberinde EmuAstro’da olanlar'),
               m.map((u) => '• ${u['name']}${u['username'] != null ? ' (@${u['username']})' : ''}').join('\n'));
         }
       } catch (_) {}
@@ -177,7 +179,7 @@ Future<void> pickFromContacts(BuildContext context) async {
               builder: (c, sc) => ListView(controller: sc, children: [
                 Padding(
                   padding: EdgeInsets.all(18),
-                  child: Text('Rehberinden seç', style: T.monoTitleBold),
+                  child: Text(tr('Rehberinden seç'), style: T.monoTitleBold),
                 ),
                 for (final ct in list)
                   ListTile(
@@ -190,7 +192,7 @@ Future<void> pickFromContacts(BuildContext context) async {
     }
   } catch (_) {
     if (context.mounted) {
-      showInfo(context, 'Rehber', 'Rehbere şu an erişilemedi.');
+      showInfo(context, tr('Rehber'), tr('Rehbere şu an erişilemedi.'));
     }
   }
 }
@@ -221,12 +223,12 @@ class FriendReport extends StatelessWidget {
                   app.removeFriend(friend);
                   Navigator.pop(context);
                 },
-                child: const Text('Sil',
+                child: Text(tr('Sil'),
                     style: TextStyle(fontFamily: 'Figtree', color: Colors.red)),
               ),
             ]),
             const SizedBox(height: 10),
-            Text(friend.partner ? 'RUH EŞİ RAPORU' : 'İLİŞKİ RAPORU',
+            Text(friend.partner ? tr('RUH EŞİ RAPORU') : tr('İLİŞKİ RAPORU'),
                 style: T.sectionLabel),
             const SizedBox(height: 6),
             Text('${app.profile.name} & ${friend.data.name}', style: T.monoTitleBold),
@@ -263,13 +265,13 @@ class FriendReport extends StatelessWidget {
             if (premiumNeeded)
               Padding(
                 padding: const EdgeInsets.only(bottom: 14),
-                child: Text('İletişim, duygusal bağ ve uzun vade bölümleri Premium’da.',
+                child: Text(tr('İletişim, duygusal bağ ve uzun vade bölümleri Premium’da.'),
                     style: T.body.copyWith(color: C.accent, fontWeight: FontWeight.w700)),
               ),
-            Text('Haritalarınız arası açılar', style: T.heading),
+            Text(tr('Haritalarınız arası açılar'), style: T.heading),
             const SizedBox(height: 10),
             if (notes.isEmpty)
-              Text('Belirgin bir açı yok; ilişki daha çok ortak deneyimle şekillenir.',
+              Text(tr('Belirgin bir açı yok; ilişki daha çok ortak deneyimle şekillenir.'),
                   style: T.body),
             for (final (i, n) in notes.indexed)
               if (!premiumNeeded || i < 2)
