@@ -35,7 +35,8 @@ class EmuNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const fg = Color(0xFF111312);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final fg = dark ? Colors.white : const Color(0xFF111312);
     final radius = BorderRadius.circular(barHeight / 2);
     return SafeArea(
       top: false,
@@ -43,6 +44,7 @@ class EmuNavBar extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(_side, 0, _side, 4),
         child: DecoratedBox(
           decoration: BoxDecoration(borderRadius: radius, boxShadow: [
+            if (!dark)
             BoxShadow(
                 color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 18,
@@ -57,10 +59,12 @@ class EmuNavBar extends StatelessWidget {
               ),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.42),
+                    color: dark
+                        ? const Color(0xFF2C2C30).withValues(alpha: 0.62)
+                        : Colors.white.withValues(alpha: 0.42),
                     borderRadius: radius),
                 child: CustomPaint(
-                  foregroundPainter: const _RimPainter(),
+                  foregroundPainter: _RimPainter(dark),
                   child: SizedBox(
                     height: barHeight,
                     child: Padding(
@@ -79,7 +83,9 @@ class EmuNavBar extends StatelessWidget {
                             width: pill,
                             child: DecoratedBox(
                               decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.06),
+                                color: dark
+                                    ? Colors.white.withValues(alpha: 0.13)
+                                    : Colors.black.withValues(alpha: 0.06),
                                 borderRadius: BorderRadius.circular(
                                     (barHeight - _inset * 2) / 2),
                               ),
@@ -286,7 +292,8 @@ class _GlyphPainter extends CustomPainter {
 }
 
 class _RimPainter extends CustomPainter {
-  const _RimPainter();
+  final bool dark;
+  const _RimPainter(this.dark);
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
@@ -298,14 +305,20 @@ class _RimPainter extends CustomPainter {
           ..shader = LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Colors.white.withValues(alpha: .95),
-                Colors.black.withValues(alpha: .06),
-                Colors.black.withValues(alpha: .08),
-              ],
+              colors: dark
+                  ? [
+                      Colors.white.withValues(alpha: .30),
+                      Colors.white.withValues(alpha: .10),
+                      Colors.white.withValues(alpha: .16),
+                    ]
+                  : [
+                      Colors.white.withValues(alpha: .95),
+                      Colors.black.withValues(alpha: .06),
+                      Colors.black.withValues(alpha: .08),
+                    ],
               stops: const [0, .5, 1]).createShader(rect));
   }
 
   @override
-  bool shouldRepaint(_RimPainter o) => false;
+  bool shouldRepaint(_RimPainter o) => o.dark != dark;
 }

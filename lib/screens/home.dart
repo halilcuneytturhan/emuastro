@@ -92,7 +92,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(color: C.panel, borderRadius: BorderRadius.circular(18)),
               child: Row(children: [
-                Text(d.month == 2 ? '♥' : '✦', style: const TextStyle(fontSize: 20, color: C.accent)),
+                Text(d.month == 2 ? '♥' : '✦', style: TextStyle(fontSize: 20, color: C.accent)),
                 const SizedBox(width: 12),
                 Expanded(child: Text(d.month == 2 ? 'Sevgililer Günü uyum testi' : '${d.month == 12 ? d.year : d.year - 1} yılının özeti hazır',
                     style: T.heading.copyWith(fontSize: 13.6))),
@@ -112,7 +112,7 @@ class HomeScreen extends StatelessWidget {
         _pad(const MoonCard()),
         const SizedBox(height: 56),
         _pad(Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Gökyüzünde neler oluyor', style: T.monoTitle),
+          Text('Gökyüzünde neler oluyor', style: T.monoTitle),
           const SizedBox(height: 6),
           Text('Bu dönemin olayları ve senin haritana etkileri',
               style: T.body.copyWith(fontSize: 12.6)),
@@ -123,7 +123,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 12),
           ],
           const SizedBox(height: 10),
-          const Text('Görünürlük ve Hareket', style: T.monoTitleBold),
+          Text('Görünürlük ve Hareket', style: T.monoTitleBold),
           const SizedBox(height: 24),
         ])),
         const _MoveFolders(),
@@ -141,7 +141,7 @@ class HomeScreen extends StatelessWidget {
         _pad(_DarkButton(
             label: 'PDF indir / paylaş',
             height: 61,
-            color: Colors.black,
+            color: C.button,
             trailing: const ShareIcon(size: 13),
             onTap: () async {
               try {
@@ -346,7 +346,7 @@ class _ChartFolderFront extends StatelessWidget {
           height: 27,
           decoration: BoxDecoration(
               color: Colors.white, borderRadius: BorderRadius.circular(14)),
-          child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Sprite('lock', size: 11, cells: 11, shadow: false),
             SizedBox(width: 9),
             Flexible(
@@ -358,7 +358,7 @@ class _ChartFolderFront extends StatelessWidget {
                       fontFamily: 'Figtree',
                       fontWeight: FontWeight.w700,
                       fontSize: 10.4,
-                      color: C.ink)),
+                      color: Color(0xFF0B0A0F))),
             ),
           ]),
         ),
@@ -384,7 +384,7 @@ class _NeverCard extends StatelessWidget {
       shadowY: 10,
       padding: const EdgeInsets.fromLTRB(21.5, 20, 21.5, 14),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('Bugün asla yapma', style: T.monoCard),
+        Text('Bugün asla yapma', style: T.monoCard),
         const SizedBox(height: 11),
         Text(app.neverToday, style: T.cardBody),
         const SizedBox(height: 18),
@@ -423,7 +423,7 @@ class _PerformanceState extends State<_Performance> {
       _pad(Text('BUGÜNÜN PERFORMANS KODU', style: T.sectionLabel)),
       const SizedBox(height: 13),
       _pad(Row(children: [
-        const Expanded(child: Text('Günlük yaşam haritası', style: T.monoTitle)),
+        Expanded(child: Text('Günlük yaşam haritası', style: T.monoTitle)),
         Container(
           width: 51,
           height: 29,
@@ -444,11 +444,11 @@ class _PerformanceState extends State<_Performance> {
             ),
             const SizedBox(width: 8),
             Text('${app.streak}',
-                style: const TextStyle(
+                style: TextStyle(
                     fontFamily: 'Figtree',
                     fontWeight: FontWeight.w800,
                     fontSize: 12,
-                    color: C.ink)),
+                    color: Color(0xFF0B0A0F))),
           ]),
         ),
       ])),
@@ -734,7 +734,7 @@ class _MoveFoldersState extends State<_MoveFolders> {
                         borderRadius: BorderRadius.circular(3),
                         color: i == active
                             ? const Color(0xFF2FC873)
-                            : const Color(0xFFCFCED4)),
+                            : C.line),
                   ))),
     ]);
   }

@@ -36,9 +36,9 @@ class SettingsScreen extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                       child: const Icon(Icons.chevron_left_rounded, size: 32))),
               const SizedBox(height: 10),
-              const Text('AYARLAR', style: T.sectionLabel),
+              Text('AYARLAR', style: T.sectionLabel),
               const SizedBox(height: 6),
-              const Text('Ayarlar', style: T.display),
+              Text('Ayarlar', style: T.display),
               const SizedBox(height: 20),
               row('Profil ve doğum bilgileri',
                   '${app.profile.name} · ${app.profile.place}', () => editProfile(context)),
@@ -56,6 +56,22 @@ class SettingsScreen extends StatelessWidget {
                 title: Text('Bildirimler', style: T.heading),
                 subtitle: Text('Her sabah 09:00 günlük skor, önemli gökyüzü olaylarından bir gün önce uyarı',
                     style: T.body.copyWith(fontSize: 12)),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text('Görünüm', style: T.heading),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: SegmentedButton<String>(
+                    segments: const [
+                      ButtonSegment(value: 'system', label: Text('Sistem')),
+                      ButtonSegment(value: 'light', label: Text('Açık')),
+                      ButtonSegment(value: 'dark', label: Text('Karanlık')),
+                    ],
+                    selected: {app.themeMode},
+                    onSelectionChanged: (v) => app.setThemeMode(v.first),
+                  ),
+                ),
               ),
               row('Aydınlatma Metni ve Gizlilik', 'KVKK kapsamındaki bilgilendirme', () => openLegal(context)),
               row('Hakkında', 'EmuAstro 1.0', () => showInfo(context, 'EmuAstro',
@@ -95,7 +111,7 @@ Future<void> createUsername(BuildContext context) async {
       builder: (ctx) => StatefulBuilder(
             builder: (ctx, setS) => AlertDialog(
               backgroundColor: C.page,
-              title: const Text('Kullanıcı adı', style: T.monoTitleBold),
+              title: Text('Kullanıcı adı', style: T.monoTitleBold),
               content: TextField(
                 controller: c,
                 autofocus: true,

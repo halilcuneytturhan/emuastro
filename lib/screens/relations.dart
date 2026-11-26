@@ -46,7 +46,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
               backgroundColor: C.page,
-              title: const Text('Hediye kodu', style: T.monoTitleBold),
+              title: Text('Hediye kodu', style: T.monoTitleBold),
               content: TextField(
                   controller: c,
                   autofocus: true,
@@ -70,7 +70,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
               backgroundColor: C.page,
-              title: const Text('Numaranı ekle', style: T.monoTitleBold),
+              title: Text('Numaranı ekle', style: T.monoTitleBold),
               content: Column(mainAxisSize: MainAxisSize.min, children: [
                 TextField(
                     controller: c,
@@ -120,7 +120,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(label, style: T.sectionLabel),
               const SizedBox(height: 9),
-              const Text('İlişkiler', style: T.display),
+              Text('İlişkiler', style: T.display),
               const SizedBox(height: 3),
               GestureDetector(
                 onTap: () => createUsername(context),
@@ -141,9 +141,9 @@ class _RelationsScreenState extends State<RelationsScreen> {
               height: 57,
               margin: const EdgeInsets.only(top: 6),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: C.surface,
                 borderRadius: BorderRadius.circular(34),
-                border: Border.all(color: const Color(0xFFDCDAE2), width: .8),
+                border: Border.all(color: C.line, width: .8),
                 boxShadow: [
                   BoxShadow(
                       color: Colors.black.withValues(alpha: .04),
@@ -160,7 +160,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
   List<Widget> _friends(BuildContext context) => [
         ..._header('ARKADAŞLAR · İLİŞKİLER'),
         const SizedBox(height: 19),
-        _p(const Text('Rehberinde EmuAstro\'da olanlar', style: T.heading)),
+        _p(Text('Rehberinde EmuAstro\'da olanlar', style: T.heading)),
         const SizedBox(height: 10),
         _p(Container(
           padding: const EdgeInsets.fromLTRB(17, 22, 17, 18),
@@ -230,14 +230,14 @@ class _RelationsScreenState extends State<RelationsScreen> {
           ),
         )),
         const SizedBox(height: 25),
-        _p(const Text('Eklediklerin', style: T.heading)),
+        _p(Text('Eklediklerin', style: T.heading)),
         const SizedBox(height: 10),
         _p(SizedBox(
           height: 82,
           child: ListView(scrollDirection: Axis.horizontal, children: [
             GestureDetector(
               onTap: _addFriend,
-              child: const Column(children: [
+              child: Column(children: [
                 DottedCircle(size: 64, child: DotPlus(size: 18)),
                 SizedBox(height: 4),
                 Text('Ekle',
@@ -268,7 +268,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(f.data.name,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontFamily: 'Figtree',
                           fontWeight: FontWeight.w700,
                           fontSize: 9.6,
@@ -308,7 +308,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
               width: 151,
               height: 50,
               decoration: BoxDecoration(
-                  color: Colors.black, borderRadius: BorderRadius.circular(25)),
+                  color: C.button, borderRadius: BorderRadius.circular(25)),
               child: const Center(
                   child: Text('Hediye gönder',
                       style: TextStyle(
@@ -375,7 +375,7 @@ class _RelationsScreenState extends State<RelationsScreen> {
               width: 170,
               height: 50,
               decoration: BoxDecoration(
-                  color: Colors.black, borderRadius: BorderRadius.circular(25)),
+                  color: C.button, borderRadius: BorderRadius.circular(25)),
               child: const Center(
                   child: Text('Partner ekle',
                       style: TextStyle(

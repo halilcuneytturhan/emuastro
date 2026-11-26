@@ -34,9 +34,9 @@ class LegalScreen extends StatelessWidget {
                   onTap: () => Navigator.pop(context),
                   child: const Icon(Icons.chevron_left_rounded, size: 32))),
           const SizedBox(height: 10),
-          const Text('KVKK · GİZLİLİK', style: T.sectionLabel),
+          Text('KVKK · GİZLİLİK', style: T.sectionLabel),
           const SizedBox(height: 6),
-          const Text('Aydınlatma Metni', style: T.monoTitleBold),
+          Text('Aydınlatma Metni', style: T.monoTitleBold),
           const SizedBox(height: 18),
           for (final (h, b) in sections) ...[
             Text(h, style: T.heading),

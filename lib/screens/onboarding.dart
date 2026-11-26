@@ -64,7 +64,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     height: 4,
                     margin: const EdgeInsets.only(right: 6),
                     decoration: BoxDecoration(
-                        color: i <= step ? C.accent : const Color(0xFFE3E0EA),
+                        color: i <= step ? C.accent : C.line,
                         borderRadius: BorderRadius.circular(2)),
                   ),
                 ),
@@ -75,7 +75,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               if (step > 0)
                 TextButton(
                     onPressed: () => setState(() => step--),
-                    child: const Text('Geri',
+                    child: Text('Geri',
                         style: TextStyle(fontFamily: 'Figtree', color: C.grey))),
               const Spacer(),
               GestureDetector(
@@ -87,7 +87,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     height: 54,
                     padding: const EdgeInsets.symmetric(horizontal: 34),
                     decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: C.button,
                         borderRadius: BorderRadius.circular(27)),
                     child: Center(
                       child: Text(step == 4 ? 'Haritamı oluştur' : 'Devam',
@@ -123,15 +123,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           height: 60,
           padding: const EdgeInsets.symmetric(horizontal: 18),
           decoration: BoxDecoration(
-              color: Colors.white,
+              color: C.surface,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: const Color(0xFFE2E0E8))),
+              border: Border.all(color: C.line)),
           child: Row(children: [
             Text(label, style: T.body.copyWith(fontSize: 13)),
             const Spacer(),
             Text(value, style: T.heading.copyWith(fontSize: 15)),
             const SizedBox(width: 6),
-            const Icon(Icons.chevron_right_rounded, color: C.greyLight),
+            Icon(Icons.chevron_right_rounded, color: C.greyLight),
           ]),
         ),
       );
@@ -174,7 +174,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               fillColor: Colors.white,
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
-                  borderSide: const BorderSide(color: Color(0xFFE2E0E8))),
+                  borderSide: BorderSide(color: C.line)),
             ),
           ),
         ]);
@@ -227,7 +227,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               if (r != null) setState(() => place = r);
             },
             child: Text('Diğer şehirler… (seçili: $place)',
-                style: const TextStyle(fontFamily: 'Figtree', color: C.accent)),
+                style: TextStyle(fontFamily: 'Figtree', color: C.accent)),
           ),
         ]);
       default:
@@ -244,7 +244,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
           TextButton(
             onPressed: () => openLegal(context),
-            child: const Text('Aydınlatma Metni ve Gizlilik Politikası',
+            child: Text('Aydınlatma Metni ve Gizlilik Politikası',
                 style: TextStyle(fontFamily: 'Figtree', color: C.accent, fontWeight: FontWeight.w700)),
           ),
         ]);

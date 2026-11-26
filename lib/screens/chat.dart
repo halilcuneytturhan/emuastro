@@ -58,9 +58,9 @@ class _ChatScreenState extends State<ChatScreen> {
             controller: widget.controller,
             padding: EdgeInsets.fromLTRB(kSide, top + 26, kSide, 20),
             children: [
-              const Text('EMUASTRO’YA SOR', style: T.sectionLabel),
+              Text('EMUASTRO’YA SOR', style: T.sectionLabel),
               const SizedBox(height: 5),
-              const Text('Sor', style: T.display),
+              Text('Sor', style: T.display),
               const SizedBox(height: 6),
               Text(
                   'Bugün ${app.questionLimit - app.questionsToday < 0 ? 0 : app.questionLimit - app.questionsToday} soru hakkın kaldı · ${app.premium ? 'Premium' : 'Ücretsiz plan'}',
@@ -130,14 +130,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 height: 48,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: C.surface,
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: const Color(0xFFE2E0E8))),
+                    border: Border.all(color: C.line)),
                 child: TextField(
                   controller: input,
                   onSubmitted: _send,
                   textInputAction: TextInputAction.send,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Haritana bir soru sor…',
                       hintStyle: TextStyle(fontFamily: 'Figtree', color: C.grey)),
@@ -151,8 +151,8 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Container(
                 width: 48,
                 height: 48,
-                decoration: const BoxDecoration(
-                    color: Colors.black, shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                    color: C.button, shape: BoxShape.circle),
                 child: const Icon(Icons.arrow_upward_rounded,
                     color: Colors.white, size: 22),
               ),

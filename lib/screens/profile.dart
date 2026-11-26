@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         controller: widget.controller,
         padding: EdgeInsets.only(top: top + 26, bottom: 150),
         children: [
-          _p(const Text('PROFİL', style: T.sectionLabel)),
+          _p(Text('PROFİL', style: T.sectionLabel)),
           const SizedBox(height: 4),
           _p(Row(children: [
             Text(pr.name,
@@ -83,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('EMUASTRO PREMIUM', style: T.bandKicker),
+                          Text('EMUASTRO PREMIUM', style: T.bandKicker),
                           const SizedBox(height: 4),
                           Text('Haritanın tamamını aç',
                               style: T.monoCard.copyWith(fontSize: 15.2)),
@@ -139,8 +139,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Container(
                   width: 28,
                   height: 28,
-                  decoration: const BoxDecoration(
-                      color: Color(0xFFEFEEF3), shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                      color: C.panel, shape: BoxShape.circle),
                   child: const Icon(Icons.open_in_full_rounded,
                       size: 13, color: Color(0xFF9C8BE8)),
                 ),
@@ -163,10 +163,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
           ])),
           const SizedBox(height: 28),
-          _p(const Divider(height: 1, color: Color(0xFFE9E8EE))),
+          _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 46),
           _p(Row(children: [
-            const Text('Rozetlerim', style: T.monoTitle),
+            Text('Rozetlerim', style: T.monoTitle),
             const SizedBox(width: 15),
             GestureDetector(
               onTap: () => showInfo(context, 'Rozetler',
@@ -213,9 +213,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         cells: 22),
                   ),
                 for (var k = app.badges.length; k < 3; k++)
-                  const DottedCircle(
+                  DottedCircle(
                     size: 92,
-                    fill: Color(0xFFEDEDF0),
+                    fill: C.panel,
                     color: Color(0xFFA3A2A8),
                     count: 60,
                     child: DotText('?',
@@ -223,11 +223,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
               ])),
           const SizedBox(height: 33),
-          _p(const Divider(height: 1, color: Color(0xFFE9E8EE))),
+          _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 39),
-          _p(const Text('HARİTA İKİZLERİN', style: T.sectionLabel)),
+          _p(Text('HARİTA İKİZLERİN', style: T.sectionLabel)),
           const SizedBox(height: 10),
-          _p(const Text('Haritan kimlere benziyor?', style: T.monoTitle)),
+          _p(Text('Haritan kimlere benziyor?', style: T.monoTitle)),
           const SizedBox(height: 28),
           SizedBox(
             height: 194,
@@ -245,15 +245,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           const SizedBox(height: 24),
-          _p(const Divider(height: 1, color: Color(0xFFE9E8EE))),
+          _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 37),
-          _p(const Text('Bu ara senin için', style: T.monoTitle)),
+          _p(Text('Bu ara senin için', style: T.monoTitle)),
           const SizedBox(height: 62),
           const _GiftBox(),
           const SizedBox(height: 30),
-          _p(const Divider(height: 1, color: Color(0xFFE9E8EE))),
+          _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 23),
-          _p(const Text('Araçlar', style: T.monoTitle)),
+          _p(Text('Araçlar', style: T.monoTitle)),
           const SizedBox(height: 16),
           for (final (pal, sp, k, t, sub, page) in [
             (Pal.purpleBand, 'star', 'PREMIUM', 'Uygun gün bulucu', 'İş, buluşma, taşınma için en iyi günler', const GoodDayFinder() as Widget),
@@ -272,7 +272,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 14),
           ],
           const SizedBox(height: 9),
-          _p(const Divider(height: 1, color: Color(0xFFE9E8EE))),
+          _p(Divider(height: 1, color: C.line)),
           const SizedBox(height: 23),
           _p(_BirthCard(onEdit: () => editProfile(context))),
           const SizedBox(height: 23),
@@ -310,7 +310,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  const Text('Doğum haritan', style: T.monoTitleBold),
+                  Text('Doğum haritan', style: T.monoTitleBold),
                   const SizedBox(height: 16),
                   ChartWheel(
                       size: MediaQuery.of(ctx).size.width - 64, data: app),
@@ -484,7 +484,7 @@ class _GiftBoxState extends State<_GiftBox> with SingleTickerProviderStateMixin 
                   child: Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: C.surface,
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(

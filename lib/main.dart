@@ -36,17 +36,54 @@ Future<void> main() async {
 /// Web önizlemede (karşılaştırma ekran görüntüleri için) iPhone güvenli alanını taklit et.
 const _simulateInsets = kIsWeb;
 
-class EmuAstroApp extends StatelessWidget {
+class EmuAstroApp extends StatefulWidget {
   const EmuAstroApp({super.key});
   @override
+  State<EmuAstroApp> createState() => _EmuAstroAppState();
+}
+
+class _EmuAstroAppState extends State<EmuAstroApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    app.addListener(_onApp);
+  }
+
+  String _lastMode = app.themeMode;
+  void _onApp() {
+    if (app.themeMode != _lastMode) setState(() => _lastMode = app.themeMode);
+  }
+
+  @override
+  void didChangePlatformBrightness() => setState(() {});
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    app.removeListener(_onApp);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final sys = WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    final dark = app.themeMode == 'dark' ||
+        (app.themeMode == 'system' && sys == Brightness.dark);
+    C.dark = dark;
+    SystemChrome.setSystemUIOverlayStyle(
+        dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
     return MaterialApp(
+      key: ValueKey(dark),
       title: 'EmuAstro',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Figtree',
+        brightness: dark ? Brightness.dark : Brightness.light,
         scaffoldBackgroundColor: C.page,
-        colorScheme: ColorScheme.fromSeed(seedColor: C.accent),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: C.accent,
+            brightness: dark ? Brightness.dark : Brightness.light),
       ),
       builder: (context, child) {
         if (!_simulateInsets) return child!;

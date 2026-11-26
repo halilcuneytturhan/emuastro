@@ -17,10 +17,10 @@ class _Back extends StatelessWidget {
           width: 40,
           height: 40,
           decoration: BoxDecoration(
-              color: Colors.white,
+              color: C.surface,
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFFE6E4EC))),
-          child: const Icon(Icons.chevron_left_rounded, color: C.ink),
+              border: Border.all(color: C.line)),
+          child: Icon(Icons.chevron_left_rounded, color: C.ink),
         ),
       );
 }
@@ -47,9 +47,9 @@ class _DetailScreenState extends State<DetailScreen> {
             children: [
               const Align(alignment: Alignment.centerLeft, child: _Back()),
               const SizedBox(height: 22),
-              const Text('KİŞİSEL HARİTAN', style: T.sectionLabel),
+              Text('KİŞİSEL HARİTAN', style: T.sectionLabel),
               const SizedBox(height: 8),
-              const Text('Detaylı analiz', style: T.monoTitleBold),
+              Text('Detaylı analiz', style: T.monoTitleBold),
               const SizedBox(height: 6),
               Text(
                   'Güneş ${app.sun} · Ay ${app.moon} · Yükselen ${app.asc}',

@@ -101,7 +101,7 @@ Future<(String, DateTime, String, String, bool)?> birthForm(BuildContext context
                   height: 50,
                   child: FilledButton(
                     style: FilledButton.styleFrom(
-                        backgroundColor: Colors.black,
+                        backgroundColor: C.button,
                         shape: const StadiumBorder()),
                     onPressed: () {
                       if (nameC.text.trim().isEmpty) return;
@@ -128,7 +128,7 @@ Widget _pickRow(String label, String value, VoidCallback onTap) => InkWell(
           const Spacer(),
           Text(value, style: T.heading.copyWith(fontSize: 14)),
           const SizedBox(width: 6),
-          const Icon(Icons.chevron_right_rounded, color: C.greyLight),
+          Icon(Icons.chevron_right_rounded, color: C.greyLight),
         ]),
       ),
     );
@@ -182,7 +182,7 @@ Future<void> pickFromContacts(BuildContext context) async {
               expand: false,
               initialChildSize: .7,
               builder: (c, sc) => ListView(controller: sc, children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(18),
                   child: Text('Rehberinden seç', style: T.monoTitleBold),
                 ),
@@ -273,7 +273,7 @@ class FriendReport extends StatelessWidget {
                 child: Text('İletişim, duygusal bağ ve uzun vade bölümleri Premium’da.',
                     style: T.body.copyWith(color: C.accent, fontWeight: FontWeight.w700)),
               ),
-            const Text('Haritalarınız arası açılar', style: T.heading),
+            Text('Haritalarınız arası açılar', style: T.heading),
             const SizedBox(height: 10),
             if (notes.isEmpty)
               Text('Belirgin bir açı yok; ilişki daha çok ortak deneyimle şekillenir.',
@@ -293,7 +293,7 @@ class FriendReport extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: C.panel, borderRadius: BorderRadius.circular(18)),
                   child: Row(children: [
-                    const Icon(Icons.lock_rounded, color: C.accent),
+                    Icon(Icons.lock_rounded, color: C.accent),
                     const SizedBox(width: 12),
                     Expanded(
                         child: Text('${notes.length - 2} açı daha Premium’da',

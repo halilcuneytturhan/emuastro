@@ -133,7 +133,7 @@ class WeekStrip extends StatelessWidget {
     final best = scores.indexOf(scores.reduce(math.max));
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(children: [
-        const Text('Bu hafta', style: T.heading),
+        Text('Bu hafta', style: T.heading),
         const Spacer(),
         Text('En iyi gün: ${_g[days[best].weekday - 1]} · %${scores[best]}',
             style: T.body.copyWith(fontSize: 11.5, color: C.accent, fontWeight: FontWeight.w700)),

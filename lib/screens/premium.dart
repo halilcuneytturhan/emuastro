@@ -80,7 +80,7 @@ class PremiumScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
                   onTap: () => Navigator.pop(context),
-                  child: const Icon(Icons.close_rounded, size: 28, color: C.ink),
+                  child: Icon(Icons.close_rounded, size: 28, color: C.ink),
                 ),
               ),
               const SizedBox(height: 18),
@@ -91,7 +91,7 @@ class PremiumScreen extends StatelessWidget {
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   const Sprite('star', size: 44, cells: 24),
                   const SizedBox(height: 14),
-                  const Text('EMUASTRO PREMIUM', style: T.bandKicker),
+                  Text('EMUASTRO PREMIUM', style: T.bandKicker),
                   const SizedBox(height: 6),
                   Text('Haritanın tamamını aç',
                       style: T.monoCard.copyWith(fontSize: 19)),
@@ -130,7 +130,7 @@ class PremiumScreen extends StatelessWidget {
                     Purchases.product == null
                         ? 'Abone ol'
                         : 'Abone ol · ${Purchases.product!.price}/ay',
-                    Colors.black, () async {
+                    C.button, () async {
                   final e = await Purchases.buy();
                   if (e != null && context.mounted) {
                     showInfo(context, 'Satın alma', e);
@@ -154,7 +154,7 @@ class PremiumScreen extends StatelessWidget {
                           e ?? 'Önceki satın alımın varsa birkaç saniye içinde etkinleşir.');
                     }
                   },
-                  child: const Text('Satın alımları geri yükle',
+                  child: Text('Satın alımları geri yükle',
                       style: TextStyle(
                           fontFamily: 'Figtree',
                           color: C.accent,

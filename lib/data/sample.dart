@@ -86,6 +86,12 @@ class AppData extends ChangeNotifier {
   late List<Twin> twins;
 
   bool onboarded = false;
+  String themeMode = 'system';
+  void setThemeMode(String m) {
+    themeMode = m;
+    _prefs?.setString('theme', m);
+    notifyListeners();
+  }
   bool notificationsOn = true;
 
   Future<void> finishOnboarding(String name, DateTime b, String t, String place) async {
@@ -154,6 +160,10 @@ class AppData extends ChangeNotifier {
     }
     final p = _prefs!;
     onboarded = p.getBool('onboarded') ?? false;
+    themeMode = p.getString('theme') ?? 'system';
+    if (kIsWeb && Uri.base.queryParameters['theme'] != null) {
+      themeMode = Uri.base.queryParameters['theme']!;
+    }
     notificationsOn = p.getBool('notif') ?? true;
     final pj = p.getString('profile');
     if (pj != null) {

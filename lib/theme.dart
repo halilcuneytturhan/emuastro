@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
 
 /// Renkler referans ekran görüntülerinden örneklendi.
+/// Açık ve karanlık tema aynı tasarım dilini paylaşır; [dark] uygulama
+/// kökünde sistem/kullanıcı tercihine göre ayarlanır.
 class C {
-  static const page = Color(0xFFFBFAFD);
-  static const ink = Color(0xFF0B0A0F);
-  static const label = Color(0xFF6D4ECF);
-  static const grey = Color(0xFF8A8890);
-  static const greyLight = Color(0xFFB4B2B9);
+  static bool dark = false;
+  static Color get page => dark ? const Color(0xFF0E0D12) : const Color(0xFFFBFAFD);
+  static Color get ink => dark ? const Color(0xFFF2F0F7) : const Color(0xFF0B0A0F);
+  static Color get label => dark ? const Color(0xFFA68BFF) : const Color(0xFF6D4ECF);
+  static Color get grey => dark ? const Color(0xFF9D9AA8) : const Color(0xFF8A8890);
+  static Color get greyLight => dark ? const Color(0xFF6E6B78) : const Color(0xFFB4B2B9);
   static const navTop = Color(0xFFBDA7FA);
   static const navBase = Color(0xFFAC91FA);
-  static const accent = Color(0xFF784CF9);
-  static const panel = Color(0xFFF2F1F6);
+  static Color get accent => dark ? const Color(0xFF9479FF) : const Color(0xFF784CF9);
+  static Color get panel => dark ? const Color(0xFF1C1B22) : const Color(0xFFF2F1F6);
+  /// Beyaz yüzeyler (giriş kutuları, yuvarlak düğmeler)
+  static Color get surface => dark ? const Color(0xFF1C1B22) : Colors.white;
+  /// Siyah ana düğmeler
+  static Color get button => dark ? const Color(0xFF34313F) : Colors.black;
+  static Color get line => dark ? const Color(0xFF2A2931) : const Color(0xFFE9E8EE);
 }
 
 /// Malzeme paletleri: aydınlık, ana renk, koyu kenar, sedef ışığı, zemin gölgesi.
@@ -69,88 +77,88 @@ class T {
   static const _disp = 'InterTight';
   static const _mono = 'PlexMono';
 
-  static const sectionLabel = TextStyle(
+  static TextStyle get sectionLabel => TextStyle(
       fontFamily: _sans,
       fontWeight: FontWeight.w800,
       fontSize: 9.4,
       letterSpacing: 0.15,
       color: C.label,
       height: 1.2);
-  static const display = TextStyle(
+  static TextStyle get display => TextStyle(
       fontFamily: _disp,
       fontWeight: FontWeight.w900,
       fontSize: 30.5,
       letterSpacing: -0.6,
       height: 1.1,
       color: C.ink);
-  static const monoTitle = TextStyle(
+  static TextStyle get monoTitle => TextStyle(
       fontFamily: _mono,
       fontWeight: FontWeight.w500,
       fontSize: 19.2,
       letterSpacing: 0.15,
       height: 1.2,
       color: C.ink);
-  static const monoTitleBold = TextStyle(
+  static TextStyle get monoTitleBold => TextStyle(
       fontFamily: _mono,
       fontWeight: FontWeight.w700,
       fontSize: 19.2,
       letterSpacing: 0.15,
       height: 1.2,
       color: C.ink);
-  static const monoCard = TextStyle(
+  static TextStyle get monoCard => TextStyle(
       fontFamily: _mono,
       fontWeight: FontWeight.w500,
       fontSize: 14,
       letterSpacing: 0.2,
       color: Colors.white);
-  static const tabLabel = TextStyle(
+  static TextStyle get tabLabel => TextStyle(
       fontFamily: _mono,
       fontWeight: FontWeight.w700,
       fontSize: 10.5,
       letterSpacing: 2.2,
       color: Colors.white);
-  static const cardBody = TextStyle(
+  static TextStyle get cardBody => TextStyle(
       fontFamily: _disp,
       fontWeight: FontWeight.w800,
       fontSize: 18.4,
       height: 1.38,
       letterSpacing: -0.05,
       color: Colors.white);
-  static const body = TextStyle(
+  static TextStyle get body => TextStyle(
       fontFamily: _sans,
       fontWeight: FontWeight.w400,
       fontSize: 12.8,
       height: 1.4,
       color: C.grey);
-  static const small = TextStyle(
+  static TextStyle get small => TextStyle(
       fontFamily: _sans,
       fontWeight: FontWeight.w400,
       fontSize: 9.4,
       color: Colors.white70);
-  static const bandKicker = TextStyle(
+  static TextStyle get bandKicker => TextStyle(
       fontFamily: _sans,
       fontWeight: FontWeight.w800,
       fontSize: 8.6,
       letterSpacing: 1.1,
       color: Color(0xCCFFFFFF));
-  static const bandTitle = TextStyle(
+  static TextStyle get bandTitle => TextStyle(
       fontFamily: _sans,
       fontWeight: FontWeight.w700,
       fontSize: 13.8,
       letterSpacing: -0.1,
       color: Colors.white);
-  static const bandSub = TextStyle(
+  static TextStyle get bandSub => TextStyle(
       fontFamily: _sans,
       fontWeight: FontWeight.w400,
       fontSize: 10.6,
       color: Color(0xE6FFFFFF));
-  static const heading = TextStyle(
+  static TextStyle get heading => TextStyle(
       fontFamily: _sans,
       fontWeight: FontWeight.w700,
       fontSize: 14.6,
       letterSpacing: -0.1,
       color: C.ink);
-  static const nav = TextStyle(
+  static TextStyle get nav => TextStyle(
       fontFamily: _sans,
       fontWeight: FontWeight.w500,
       fontSize: 13.4,

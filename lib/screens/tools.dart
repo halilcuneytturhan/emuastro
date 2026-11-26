@@ -46,7 +46,7 @@ Widget _lockedRow(BuildContext context, String t) => GestureDetector(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(color: C.panel, borderRadius: BorderRadius.circular(18)),
         child: Row(children: [
-          const Icon(Icons.lock_rounded, color: C.accent),
+          Icon(Icons.lock_rounded, color: C.accent),
           const SizedBox(width: 12),
           Expanded(child: Text(t, style: T.heading.copyWith(fontSize: 13.5))),
           const Icon(Icons.chevron_right_rounded),
